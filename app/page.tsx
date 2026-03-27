@@ -15,10 +15,10 @@ export default function Home() {
   }
 
   return (
-    <div className="mx-auto max-w-md space-y-4 p-4">
-      <header className="text-center">
-        <h1 className="text-2xl font-bold">HamWeight</h1>
-        <p className="text-sm text-muted-foreground">햄웨이트</p>
+    <div className="mx-auto max-w-md space-y-5 px-4 py-6">
+      <header className="flex items-baseline justify-between">
+        <h1 className="text-3xl font-bold tracking-tight">HamWeight</h1>
+        <span className="text-sm font-medium text-muted-foreground">햄웨이트</span>
       </header>
 
       <WeightCard />

@@ -37,25 +37,27 @@ export function WeightCard() {
   return (
     <>
       <motion.div
-        whileTap={{ scale: 0.98 }}
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.97, y: 2 }}
+        transition={{ type: "spring", stiffness: 400, damping: 25 }}
         onClick={() => setSheetOpen(true)}
         className="cursor-pointer"
       >
-        <Card className="relative overflow-hidden bg-gradient-to-br from-accent to-secondary/30 p-6">
+        <Card className="relative overflow-hidden bg-gradient-to-br from-accent to-secondary/30 p-8">
           <div className="flex flex-col items-center gap-4">
             <Hamster expression={expression} size="xl" />
 
             <div className="text-center">
               {latestEntry ? (
                 <>
-                  <div className="text-4xl font-bold text-foreground">
+                  <div className="text-5xl font-bold tracking-tight text-foreground">
                     {formatWeight(latestEntry.weight, unit).split(" ")[0]}
                   </div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
                     {unit === "imperial" ? "lb" : "kg"}
                   </div>
                   {bmi && (
-                    <div className="mt-2 text-lg font-medium text-foreground/80">
+                    <div className="mt-3 rounded-full bg-background/60 px-4 py-1.5 text-sm font-medium text-foreground/80 backdrop-blur-sm">
                       BMI {bmi.toFixed(1)} · {bmiCategory?.label}
                     </div>
                   )}
