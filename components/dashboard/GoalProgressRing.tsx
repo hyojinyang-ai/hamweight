@@ -18,7 +18,7 @@ export function GoalProgressRing() {
 
   if (!goal || !latestEntry) {
     return (
-      <Link href="/goals">
+      <Link href="/goals" className="block">
         <Card className="flex items-center justify-center gap-3 p-4 transition-colors hover:bg-accent/50">
           <Target className="h-5 w-5 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">Set a weight goal</span>
