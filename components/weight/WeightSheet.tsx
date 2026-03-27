@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Hamster } from "@/components/hamster/Hamster";
 import { useStore } from "@/lib/store";
 import { getTimeOfDay, kgToLb, lbToKg } from "@/lib/utils";
-import type { WeightEntry } from "@/lib/types";
+import type { WeightEntry, BodyMeasurements } from "@/lib/types";
+import { Ruler } from "lucide-react";
 
 interface WeightSheetProps {
   open: boolean;
@@ -30,6 +31,8 @@ export function WeightSheet({ open, onOpenChange, onSave }: WeightSheetProps) {
   const [timeOfDay, setTimeOfDay] = useState<WeightEntry["timeOfDay"]>(getTimeOfDay());
   const [exerciseContext, setExerciseContext] = useState<WeightEntry["exerciseContext"]>("none");
   const [showOptions, setShowOptions] = useState(false);
+  const [showMeasurements, setShowMeasurements] = useState(false);
+  const [measurements, setMeasurements] = useState<BodyMeasurements>({});
 
   useEffect(() => {
     if (open) {
@@ -38,6 +41,8 @@ export function WeightSheet({ open, onOpenChange, onSave }: WeightSheetProps) {
       setTimeOfDay(getTimeOfDay());
       setExerciseContext("none");
       setShowOptions(false);
+      setShowMeasurements(false);
+      setMeasurements({});
     }
   }, [open, defaultWeight, unit]);
 
@@ -47,15 +52,27 @@ export function WeightSheet({ open, onOpenChange, onSave }: WeightSheetProps) {
 
     const weightKg = unit === "imperial" ? lbToKg(weightNum) : weightNum;
 
+    // Only include measurements if any are filled
+    const hasMeasurements = Object.values(measurements).some((v) => v && v > 0);
+
     addEntry({
       weight: weightKg,
       timestamp: new Date().toISOString(),
       timeOfDay,
       exerciseContext,
+      ...(hasMeasurements && { measurements }),
     });
 
     onOpenChange(false);
     onSave?.();
+  };
+
+  const updateMeasurement = (key: keyof BodyMeasurements, value: string) => {
+    const num = parseFloat(value);
+    setMeasurements((prev) => ({
+      ...prev,
+      [key]: isNaN(num) ? undefined : num,
+    }));
   };
 
   const adjustWeight = (delta: number) => {
@@ -170,6 +187,44 @@ export function WeightSheet({ open, onOpenChange, onSave }: WeightSheetProps) {
                   ))}
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Body Measurements (optional) */}
+          <button
+            onClick={() => setShowMeasurements(!showMeasurements)}
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-muted-foreground/30 p-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          >
+            <Ruler className="h-4 w-4" />
+            {showMeasurements ? "Hide" : "Add"} body measurements
+          </button>
+
+          {showMeasurements && (
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { key: "waist" as const, label: "Waist" },
+                { key: "hips" as const, label: "Hips" },
+                { key: "chest" as const, label: "Chest" },
+                { key: "arms" as const, label: "Arms" },
+                { key: "thighs" as const, label: "Thighs" },
+              ].map(({ key, label }) => (
+                <div key={key}>
+                  <Label className="text-xs text-muted-foreground">{label}</Label>
+                  <div className="flex items-center gap-1">
+                    <Input
+                      type="number"
+                      placeholder="—"
+                      value={measurements[key] ?? ""}
+                      onChange={(e) => updateMeasurement(key, e.target.value)}
+                      className="h-9"
+                      step="0.5"
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      {unit === "imperial" ? "in" : "cm"}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 

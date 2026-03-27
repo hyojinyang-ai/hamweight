@@ -1,9 +1,18 @@
+export interface BodyMeasurements {
+  waist?: number; // cm
+  hips?: number; // cm
+  chest?: number; // cm
+  arms?: number; // cm
+  thighs?: number; // cm
+}
+
 export interface WeightEntry {
   id: string;
   weight: number; // always kg
   timestamp: string; // ISO string
   timeOfDay: 'morning' | 'lunch' | 'afternoon' | 'evening';
   exerciseContext: 'before' | 'after' | 'none';
+  measurements?: BodyMeasurements;
 }
 
 export interface UserProfile {

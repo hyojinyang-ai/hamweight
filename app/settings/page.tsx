@@ -53,7 +53,7 @@ export default function SettingsPage() {
     }
   };
 
-  const handleExportData = () => {
+  const handleExportJSON = () => {
     const data = {
       profile,
       entries,
@@ -68,6 +68,37 @@ export default function SettingsPage() {
     const a = document.createElement("a");
     a.href = url;
     a.download = `hamweight-export-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportCSV = () => {
+    const headers = ["Date", "Time", "Weight (kg)", "Weight (lb)", "Time of Day", "Exercise Context", "Waist", "Hips", "Chest", "Arms", "Thighs"];
+    const rows = entries.map((entry) => {
+      const date = new Date(entry.timestamp);
+      const weightLb = (entry.weight * 2.20462).toFixed(1);
+      const m = entry.measurements;
+      return [
+        date.toISOString().slice(0, 10),
+        date.toLocaleTimeString(),
+        entry.weight.toFixed(1),
+        weightLb,
+        entry.timeOfDay ?? "",
+        entry.exerciseContext ?? "",
+        m?.waist ?? "",
+        m?.hips ?? "",
+        m?.chest ?? "",
+        m?.arms ?? "",
+        m?.thighs ?? "",
+      ].join(",");
+    });
+
+    const csv = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `hamweight-export-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -224,13 +255,18 @@ export default function SettingsPage() {
             Your Data
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="space-y-3">
           <div className="text-sm text-muted-foreground">
             {entries.length} entries · {streak} day streak
           </div>
-          <Button variant="outline" onClick={handleExportData} className="w-full">
-            Export Data (JSON)
-          </Button>
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" onClick={handleExportCSV}>
+              Export CSV
+            </Button>
+            <Button variant="outline" onClick={handleExportJSON}>
+              Export JSON
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

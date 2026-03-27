@@ -12,6 +12,15 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "HamWeight - 햄웨이트",
   description: "Simple weight tracking with your hamster buddy",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "HamWeight",
+  },
+  icons: {
+    icon: "/icons/icon-192.png",
+    apple: "/icons/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -19,6 +28,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  themeColor: "#f08c70",
 };
 
 export default function RootLayout({
