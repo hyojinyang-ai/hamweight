@@ -20,8 +20,9 @@ interface TrendChartProps {
 }
 
 export function TrendChart({ days = 7, showCard = true }: TrendChartProps) {
-  const entries = useStore((s) => s.getEntriesForDays(days));
+  const getEntriesForDays = useStore((s) => s.getEntriesForDays);
   const profile = useStore((s) => s.profile);
+  const entries = getEntriesForDays(days);
   const unit = profile?.unit ?? "metric";
 
   const data = useMemo(() => {
