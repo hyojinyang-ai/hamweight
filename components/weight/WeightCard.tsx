@@ -8,7 +8,7 @@ import { Hamster } from "@/components/hamster/Hamster";
 import { WeightSheet } from "@/components/weight/WeightSheet";
 import { useStore } from "@/lib/store";
 import { useHamsterExpression } from "@/hooks/useHamsterExpression";
-import { formatWeight } from "@/lib/utils";
+import { formatWeight, calculateBMI, getBMICategory } from "@/lib/utils";
 
 export function WeightCard() {
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -19,6 +19,11 @@ export function WeightCard() {
 
   const latestEntry = getLatestEntry();
   const unit = profile?.unit ?? "metric";
+
+  const bmi = latestEntry && profile?.height
+    ? calculateBMI(latestEntry.weight, profile.height)
+    : null;
+  const bmiCategory = bmi ? getBMICategory(bmi) : null;
 
   const expression = useHamsterExpression({
     context: justSaved ? "afterSave" : sheetOpen ? "weightInput" : "dashboard",
@@ -49,6 +54,11 @@ export function WeightCard() {
                   <div className="text-sm text-muted-foreground">
                     {unit === "imperial" ? "lb" : "kg"}
                   </div>
+                  {bmi && (
+                    <div className="mt-2 text-lg font-medium text-foreground/80">
+                      BMI {bmi.toFixed(1)} · {bmiCategory?.label}
+                    </div>
+                  )}
                 </>
               ) : (
                 <div className="text-lg text-muted-foreground">
