@@ -16,7 +16,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { Hamster } from "@/components/hamster/Hamster";
 import { useStore } from "@/lib/store";
-import { getTimeOfDay, cmToFtIn, ftInToCm } from "@/lib/utils";
+import { getTimeOfDay, ftInToCm } from "@/lib/utils";
 
 type Step = "welcome" | "setup" | "firstWeight";
 

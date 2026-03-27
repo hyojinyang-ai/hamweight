@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Hamster } from "@/components/hamster/Hamster";
 import { useStore } from "@/lib/store";
-import { getTimeOfDay, formatWeight, kgToLb, lbToKg } from "@/lib/utils";
+import { getTimeOfDay, kgToLb, lbToKg } from "@/lib/utils";
 import type { WeightEntry } from "@/lib/types";
 
 interface WeightSheetProps {

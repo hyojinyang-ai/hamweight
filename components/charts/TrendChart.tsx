@@ -63,8 +63,8 @@ export function TrendChart({ days = 7, showCard = true }: TrendChartProps) {
               width={30}
             />
             <Tooltip
-              formatter={(value: number) => [
-                formatWeight(value, unit),
+              formatter={(value) => [
+                formatWeight(Number(value), unit),
                 "Weight",
               ]}
               labelFormatter={(label) => label}

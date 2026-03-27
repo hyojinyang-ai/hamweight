@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { format, differenceInDays } from "date-fns";
-import { Target, Calendar, TrendingDown, TrendingUp, Minus } from "lucide-react";
+import { Target, TrendingDown, TrendingUp, Minus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Hamster } from "@/components/hamster/Hamster";
 import { useStore } from "@/lib/store";
-import { formatWeight, kgToLb, lbToKg } from "@/lib/utils";
+import { formatWeight, lbToKg } from "@/lib/utils";
 import type { Goal } from "@/lib/types";
 
 export default function GoalsPage() {
