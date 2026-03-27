@@ -1,0 +1,89 @@
+<h2>Weight Input Flow: How should logging work?</h2>
+<p class="subtitle">User taps the main input area — what happens next?</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #FFF9F0;">
+      <div style="width: 160px; margin: 0 auto; background: white; border-radius: 20px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="text-align: center; font-size: 20px; margin-bottom: 8px;">🐹</div>
+        <!-- Weight input -->
+        <div style="background: #FFF3E0; border-radius: 12px; padding: 12px; text-align: center;">
+          <div style="font-size: 28px; font-weight: bold; color: #6D4C41;">72.5</div>
+          <div style="font-size: 10px; color: #999;">kg</div>
+        </div>
+        <!-- Time pills -->
+        <div style="display: flex; gap: 4px; margin-top: 10px; flex-wrap: wrap; justify-content: center;">
+          <div style="background: #FFE082; padding: 4px 8px; border-radius: 12px; font-size: 8px;">🌅 Morning</div>
+          <div style="background: #f0f0f0; padding: 4px 8px; border-radius: 12px; font-size: 8px;">🌞 Lunch</div>
+          <div style="background: #f0f0f0; padding: 4px 8px; border-radius: 12px; font-size: 8px;">🌆 Evening</div>
+        </div>
+        <!-- Exercise pills -->
+        <div style="display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; justify-content: center;">
+          <div style="background: #f0f0f0; padding: 4px 8px; border-radius: 12px; font-size: 8px;">💪 Before</div>
+          <div style="background: #f0f0f0; padding: 4px 8px; border-radius: 12px; font-size: 8px;">🏃 After</div>
+          <div style="background: #A8D5A2; padding: 4px 8px; border-radius: 12px; font-size: 8px;">😴 None</div>
+        </div>
+        <!-- Save button -->
+        <div style="background: #FFCBA4; border-radius: 10px; padding: 10px; text-align: center; margin-top: 12px; font-size: 11px; font-weight: bold; color: #6D4C41;">Save</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. All-In-One Modal</h3>
+      <p>Single screen: weight input + time + exercise context. One tap to save.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #FFF9F0;">
+      <div style="width: 160px; margin: 0 auto;">
+        <!-- Step indicator -->
+        <div style="display: flex; justify-content: center; gap: 6px; margin-bottom: 8px;">
+          <div style="width: 8px; height: 8px; border-radius: 50%; background: #FFCBA4;"></div>
+          <div style="width: 8px; height: 8px; border-radius: 50%; background: #ddd;"></div>
+          <div style="width: 8px; height: 8px; border-radius: 50%; background: #ddd;"></div>
+        </div>
+        <div style="background: white; border-radius: 20px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div style="text-align: center; font-size: 10px; color: #999; margin-bottom: 8px;">Step 1 of 3</div>
+          <div style="text-align: center; font-size: 20px; margin-bottom: 8px;">🐹</div>
+          <!-- Weight input -->
+          <div style="background: #FFF3E0; border-radius: 12px; padding: 16px; text-align: center;">
+            <div style="font-size: 32px; font-weight: bold; color: #6D4C41;">72.5</div>
+            <div style="font-size: 10px; color: #999;">Swipe or tap to adjust</div>
+          </div>
+          <!-- Next button -->
+          <div style="background: #FFCBA4; border-radius: 10px; padding: 10px; text-align: center; margin-top: 12px; font-size: 11px; font-weight: bold; color: #6D4C41;">Next →</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Step-by-Step Wizard</h3>
+      <p>3 quick steps: Weight → Time → Exercise. Focused, one thing at a time.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #FFF9F0;">
+      <div style="width: 160px; margin: 0 auto; background: white; border-radius: 20px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="text-align: center; font-size: 20px; margin-bottom: 8px;">🐹</div>
+        <!-- Weight input only -->
+        <div style="background: #FFF3E0; border-radius: 12px; padding: 16px; text-align: center;">
+          <div style="font-size: 32px; font-weight: bold; color: #6D4C41;">72.5</div>
+          <div style="font-size: 10px; color: #999;">kg</div>
+        </div>
+        <!-- Smart defaults shown -->
+        <div style="margin-top: 10px; padding: 8px; background: #f8f8f8; border-radius: 8px; font-size: 9px; color: #666; text-align: center;">
+          Auto: 🌅 Morning · 😴 No exercise<br/>
+          <span style="color: #FFCBA4; text-decoration: underline;">Change</span>
+        </div>
+        <!-- Save button -->
+        <div style="background: #FFCBA4; border-radius: 10px; padding: 10px; text-align: center; margin-top: 10px; font-size: 11px; font-weight: bold; color: #6D4C41;">Save</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. Smart Defaults</h3>
+      <p>Just enter weight — time/exercise auto-detected. Tap "Change" only if needed.</p>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top: 24px; color: #666; font-size: 14px;">All options support decimal input (0.1kg precision) with +/- buttons or direct typing</p>

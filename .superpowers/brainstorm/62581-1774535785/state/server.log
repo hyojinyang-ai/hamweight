@@ -1,0 +1,18 @@
+{"type":"server-started","port":56892,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:56892","screen_dir":"/Users/hyojin.yang/hamweight/.superpowers/brainstorm/62581-1774535785/content","state_dir":"/Users/hyojin.yang/hamweight/.superpowers/brainstorm/62581-1774535785/state"}
+{"type":"screen-added","file":"/Users/hyojin.yang/hamweight/.superpowers/brainstorm/62581-1774535785/content/color-palette.html"}
+{"type":"screen-added","file":"/Users/hyojin.yang/hamweight/.superpowers/brainstorm/62581-1774535785/content/color-palette-v2.html"}
+{"source":"user-event","type":"click","text":"Mix A: Warm Base + Sunny Accent\n      Peachy pink primary, golden yellow for highlights and CTAs","choice":"mix1","id":null,"timestamp":1774535926695}
+{"source":"user-event","type":"click","text":"Mix B: Sunny Base + Warm Accent\n      Golden yellow primary, soft coral for warmth and cards","choice":"mix2","id":null,"timestamp":1774535942712}
+{"source":"user-event","type":"click","text":"Mix C: Balanced Blend\n      Soft apricot + muted gold — equal warmth and sunshine","choice":"mix3","id":null,"timestamp":1774535943522}
+{"source":"user-event","type":"click","text":"Mix B: Sunny Base + Warm Accent\n      Golden yellow primary, soft coral for warmth and cards","choice":"mix2","id":null,"timestamp":1774535944978}
+{"source":"user-event","type":"click","text":"Mix A: Warm Base + Sunny Accent\n      Peachy pink primary, golden yellow for highlights and CTAs","choice":"mix1","id":null,"timestamp":1774535946206}
+{"source":"user-event","type":"click","text":"Mix B: Sunny Base + Warm Accent\n      Golden yellow primary, soft coral for warmth and cards","choice":"mix2","id":null,"timestamp":1774535947870}
+{"source":"user-event","type":"click","text":"Mix C: Balanced Blend\n      Soft apricot + muted gold — equal warmth and sunshine","choice":"mix3","id":null,"timestamp":1774535948503}
+{"type":"screen-added","file":"/Users/hyojin.yang/hamweight/.superpowers/brainstorm/62581-1774535785/content/dashboard-layout.html"}
+{"type":"screen-added","file":"/Users/hyojin.yang/hamweight/.superpowers/brainstorm/62581-1774535785/content/weight-input-flow.html"}
+{"type":"screen-added","file":"/Users/hyojin.yang/hamweight/.superpowers/brainstorm/62581-1774535785/content/waiting.html"}
+{"type":"screen-added","file":"/Users/hyojin.yang/hamweight/.superpowers/brainstorm/62581-1774535785/content/color-system.html"}
+{"type":"screen-added","file":"/Users/hyojin.yang/hamweight/.superpowers/brainstorm/62581-1774535785/content/color-alternatives.html"}
+{"type":"screen-added","file":"/Users/hyojin.yang/hamweight/.superpowers/brainstorm/62581-1774535785/content/color-system-v2.html"}
+{"type":"screen-added","file":"/Users/hyojin.yang/hamweight/.superpowers/brainstorm/62581-1774535785/content/waiting-2.html"}
+{"type":"server-stopped","reason":"idle timeout"}
