@@ -1,6 +1,7 @@
 // app/history/page.tsx
 "use client";
 
+import Image from "next/image";
 import { useMemo } from "react";
 import { format } from "date-fns";
 import { Trash2, Sunrise, Sun, CloudSun, Moon, Dumbbell, PersonStanding, Flame } from "lucide-react";
@@ -47,10 +48,13 @@ export default function HistoryPage() {
           <h1 className="text-2xl font-black tracking-tight">{t.history}</h1>
           <p className="text-sm font-bold text-foreground/50">{t.historySubtitle}</p>
         </div>
-        <img
+        <Image
           src="/icons/icon-192.png"
           alt="Huahuachi icon"
-          className="h-16 w-16 scale-x-[-1] rounded-2xl object-contain" style={{ backgroundColor: "rgb(249, 247, 241)" }}
+          width={64}
+          height={64}
+          className="h-16 w-16 scale-x-[-1] rounded-2xl object-contain"
+          style={{ backgroundColor: "rgb(249, 247, 241)" }}
         />
       </header>
 

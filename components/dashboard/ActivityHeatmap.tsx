@@ -218,7 +218,7 @@ export function ActivityHeatmap({ mode = "weight" }: ActivityHeatmapProps) {
                 <div className="text-xs font-bold text-foreground/50">{subtitle}</div>
               </div>
             </div>
-            <div className="rounded-xl bg-foreground px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-white [border:var(--neo-border)]">
+            <div className="rounded-xl bg-primary px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-primary-foreground [border:var(--neo-border)]">
               {lang === "ko" ? "보기" : "View"}
             </div>
           </div>

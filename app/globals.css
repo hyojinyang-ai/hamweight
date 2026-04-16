@@ -48,38 +48,38 @@
 
   .dark {
     --background: 220 18% 8%;
-    --foreground: 210 40% 98%;
+    --foreground: 214 22% 90%;
 
     --card: 220 16% 10%;
-    --card-foreground: 210 40% 98%;
+    --card-foreground: 214 22% 90%;
 
     --popover: 220 16% 10%;
-    --popover-foreground: 210 40% 98%;
+    --popover-foreground: 214 22% 90%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 220 16% 10%;
+    --primary: 220 14% 84%;
+    --primary-foreground: 220 18% 10%;
 
-    --secondary: 220 14% 14%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 12% 17%;
+    --secondary-foreground: 214 20% 88%;
 
-    --muted: 220 14% 14%;
-    --muted-foreground: 214 16% 68%;
+    --muted: 220 12% 15%;
+    --muted-foreground: 214 14% 66%;
 
-    --accent: 220 14% 18%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 220 12% 20%;
+    --accent-foreground: 214 20% 88%;
 
     --destructive: 0 55% 48%;
     --destructive-foreground: 0 0% 100%;
 
     --success: 160 48% 48%;
-    --success-foreground: 210 40% 98%;
+    --success-foreground: 214 22% 96%;
 
     --warning: 34 74% 62%;
     --warning-foreground: 220 16% 10%;
 
     --border: 220 16% 28%;
     --input: 220 16% 28%;
-    --ring: 210 40% 98%;
+    --ring: 220 14% 84%;
 
     --neo-shadow: 0 16px 30px -22px rgba(0, 0, 0, 0.42);
     --neo-shadow-sm: 0 10px 20px -18px rgba(0, 0, 0, 0.36);
@@ -98,6 +98,10 @@
   body {
     @apply bg-background text-foreground antialiased;
     background-image: linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0));
+  }
+
+  .dark body {
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
   }
 }
 

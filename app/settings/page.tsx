@@ -1,7 +1,9 @@
 // app/settings/page.tsx
 "use client";
 
-import { Bell, Ruler, Download, Globe } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Bell, Ruler, Globe } from "lucide-react";
+import { useTheme } from "next-themes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,10 +22,10 @@ import { cmToFtIn, ftInToCm } from "@/lib/utils";
 import { getTranslations, type Locale } from "@/lib/i18n";
 
 export default function SettingsPage() {
+  const { resolvedTheme, setTheme } = useTheme();
   const profile = useStore((s) => s.profile);
   const setProfile = useStore((s) => s.setProfile);
-  const entries = useStore((s) => s.entries);
-  const streak = useStore((s) => s.streak);
+  const [isMounted, setIsMounted] = useState(false);
 
   const {
     permission,
@@ -40,6 +42,11 @@ export default function SettingsPage() {
   const t = getTranslations(lang);
   const height = profile?.height ?? 170;
   const { feet, inches } = cmToFtIn(height);
+  const isDarkMode = resolvedTheme === "dark";
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleUnitChange = (newUnit: "metric" | "imperial") => {
     if (profile) {
@@ -59,56 +66,6 @@ export default function SettingsPage() {
     }
   };
 
-  const handleExportJSON = () => {
-    const data = {
-      profile,
-      entries,
-      streak,
-      exportedAt: new Date().toISOString(),
-    };
-
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `mywieght-export-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const handleExportCSV = () => {
-    const headers = ["Date", "Time", "Weight (kg)", "Weight (lb)", "Time of Day", "Exercise Context", "Waist", "Hips", "Chest", "Arms", "Thighs"];
-    const rows = entries.map((entry) => {
-      const date = new Date(entry.timestamp);
-      const weightLb = (entry.weight * 2.20462).toFixed(1);
-      const m = entry.measurements;
-      return [
-        date.toISOString().slice(0, 10),
-        date.toLocaleTimeString(),
-        entry.weight.toFixed(1),
-        weightLb,
-        entry.timeOfDay ?? "",
-        entry.exerciseContext ?? "",
-        m?.waist ?? "",
-        m?.hips ?? "",
-        m?.chest ?? "",
-        m?.arms ?? "",
-        m?.thighs ?? "",
-      ].join(",");
-    });
-
-    const csv = [headers.join(","), ...rows].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `mywieght-export-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <div className="mx-auto max-w-md space-y-4 px-4 py-6">
       <header className="flex items-center justify-between">
@@ -117,6 +74,22 @@ export default function SettingsPage() {
           <p className="text-sm font-bold text-foreground/50">{t.settingsSubtitle}</p>
         </div>
       </header>
+
+      <Card className="bg-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-black">{t.appearance}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <Label>{t.darkMode}</Label>
+            <Switch
+              checked={isMounted ? isDarkMode : false}
+              onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+              aria-label={t.darkMode}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Language */}
       <Card className="bg-card">
@@ -250,29 +223,6 @@ export default function SettingsPage() {
               </Button>
             </>
           )}
-        </CardContent>
-      </Card>
-
-      {/* Data */}
-      <Card className="bg-card">
-        <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-base font-black">
-            <Download className="h-4 w-4" />
-            {t.yourData}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="text-sm font-bold text-foreground/50">
-            {entries.length} {t.entries} · {streak} {t.dayStreak}
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" onClick={handleExportCSV}>
-              {t.exportCSV}
-            </Button>
-            <Button variant="outline" onClick={handleExportJSON}>
-              {t.exportJSON}
-            </Button>
-          </div>
         </CardContent>
       </Card>
     </div>

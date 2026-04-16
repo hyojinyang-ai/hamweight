@@ -43,7 +43,7 @@ export function WeightCard() {
                 muted
                 playsInline
                 aria-hidden="true"
-                className="h-auto w-[150px] rounded-[1.5rem] bg-inherit mix-blend-multiply sm:w-[185px]"
+                className="h-auto w-[150px] rounded-[1.5rem] bg-inherit mix-blend-multiply brightness-[1.02] dark:mix-blend-screen dark:brightness-[2.2] dark:contrast-[1.15] dark:drop-shadow-[0_0_18px_rgba(255,255,255,0.12)] sm:w-[185px]"
               />
             </div>
 
