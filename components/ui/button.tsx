@@ -5,24 +5,24 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-semibold tracking-wide ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97] active:translate-y-[1px]",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium tracking-tight ring-offset-background transition-all duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:translate-y-[2px] active:scale-[0.985] active:shadow-none",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: "bg-primary text-primary-foreground [border:var(--neo-border)] [box-shadow:var(--neo-shadow-sm)] hover:opacity-94 active:[box-shadow:0px_0px_0px_0px_transparent]",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground [border:var(--neo-border)] [box-shadow:var(--neo-shadow-sm)] hover:opacity-94 active:[box-shadow:0px_0px_0px_0px_transparent]",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "bg-background text-foreground [border:var(--neo-border)] [box-shadow:var(--neo-shadow-sm)] hover:bg-secondary active:[box-shadow:0px_0px_0px_0px_transparent]",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-secondary text-secondary-foreground [border:var(--neo-border)] [box-shadow:var(--neo-shadow-sm)] hover:bg-accent active:[box-shadow:0px_0px_0px_0px_transparent]",
+        ghost: "border-transparent bg-transparent hover:bg-secondary hover:text-accent-foreground shadow-none",
+        link: "border-transparent text-primary underline-offset-4 hover:underline shadow-none",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
+        default: "h-11 px-5 py-2",
+        sm: "h-9 px-3.5",
+        lg: "h-12 px-8 text-base",
         icon: "h-10 w-10",
       },
     },

@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "HamWeight",
-    short_name: "HamWeight",
+    name: "MyWeight",
+    short_name: "MyWeight",
     description: "Simple weight tracking with your hamster buddy",
     start_url: "/",
     display: "standalone",

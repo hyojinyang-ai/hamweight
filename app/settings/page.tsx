@@ -1,8 +1,7 @@
 // app/settings/page.tsx
 "use client";
 
-import { useTheme } from "next-themes";
-import { Moon, Sun, Bell, Ruler, Download } from "lucide-react";
+import { Bell, Ruler, Download, Globe } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,13 +14,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Hamster } from "@/components/hamster/Hamster";
 import { useStore } from "@/lib/store";
 import { useNotifications } from "@/hooks/useNotifications";
 import { cmToFtIn, ftInToCm } from "@/lib/utils";
+import { getTranslations, type Locale } from "@/lib/i18n";
 
 export default function SettingsPage() {
-  const { theme, setTheme } = useTheme();
   const profile = useStore((s) => s.profile);
   const setProfile = useStore((s) => s.setProfile);
   const entries = useStore((s) => s.entries);
@@ -38,12 +36,20 @@ export default function SettingsPage() {
   } = useNotifications();
 
   const unit = profile?.unit ?? "metric";
+  const lang = profile?.language ?? "en";
+  const t = getTranslations(lang);
   const height = profile?.height ?? 170;
   const { feet, inches } = cmToFtIn(height);
 
   const handleUnitChange = (newUnit: "metric" | "imperial") => {
     if (profile) {
       setProfile({ ...profile, unit: newUnit });
+    }
+  };
+
+  const handleLanguageChange = (newLang: string) => {
+    if (profile) {
+      setProfile({ ...profile, language: newLang as Locale });
     }
   };
 
@@ -67,7 +73,7 @@ export default function SettingsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `hamweight-export-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `mywieght-export-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -98,80 +104,80 @@ export default function SettingsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `hamweight-export-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `mywieght-export-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="mx-auto max-w-md space-y-4 p-4">
+    <div className="mx-auto max-w-md space-y-4 px-4 py-6">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Settings</h1>
-          <p className="text-sm text-muted-foreground">Customize your experience</p>
+          <h1 className="text-2xl font-black tracking-tight">{t.settings}</h1>
+          <p className="text-sm font-bold text-foreground/50">{t.settingsSubtitle}</p>
         </div>
-        <Hamster expression="happy" size="sm" />
       </header>
 
-      {/* Appearance */}
-      <Card>
+      {/* Language */}
+      <Card className="bg-card">
         <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-base">
-            {theme === "dark" ? (
-              <Moon className="h-4 w-4" />
-            ) : (
-              <Sun className="h-4 w-4" />
-            )}
-            Appearance
+          <CardTitle className="flex items-center gap-2 text-base font-black">
+            <Globe className="h-4 w-4" />
+            {t.language}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
-            <Label>Dark Mode</Label>
-            <Switch
-              checked={theme === "dark"}
-              onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
-            />
+            <Label>{t.language}</Label>
+            <Select value={lang} onValueChange={handleLanguageChange}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">{t.english}</SelectItem>
+                <SelectItem value="ko">{t.korean}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
 
       {/* Units */}
-      <Card>
+      <Card className="bg-card">
         <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-base">
+          <CardTitle className="flex items-center gap-2 text-base font-black">
             <Ruler className="h-4 w-4" />
-            Units & Height
+            {t.unitsHeight}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label>Measurement System</Label>
+            <Label>{t.measurementSystem}</Label>
             <Select value={unit} onValueChange={handleUnitChange}>
               <SelectTrigger className="w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="metric">Metric</SelectItem>
-                <SelectItem value="imperial">Imperial</SelectItem>
+                <SelectItem value="metric">{t.metric}</SelectItem>
+                <SelectItem value="imperial">{t.imperial}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div>
-            <Label>Height</Label>
+          <div className="flex items-start justify-between gap-4">
+            <Label className="pt-2">{t.height}</Label>
             {unit === "metric" ? (
-              <div className="mt-1 flex items-center gap-2">
+              <div className="flex items-center justify-end gap-2">
                 <Input
                   type="number"
                   value={height}
                   onChange={(e) => handleHeightChange(parseFloat(e.target.value))}
                   className="w-24"
                 />
-                <span className="text-sm text-muted-foreground">cm</span>
+                <span className="text-sm font-bold text-foreground/50">cm</span>
               </div>
             ) : (
-              <div className="mt-1 flex items-center gap-2">
+              <div className="flex items-center justify-end gap-2">
                 <Input
                   type="number"
                   value={feet}
@@ -180,7 +186,7 @@ export default function SettingsPage() {
                   }
                   className="w-16"
                 />
-                <span className="text-sm text-muted-foreground">ft</span>
+                <span className="text-sm font-bold text-foreground/50">ft</span>
                 <Input
                   type="number"
                   value={inches}
@@ -189,7 +195,7 @@ export default function SettingsPage() {
                   }
                   className="w-16"
                 />
-                <span className="text-sm text-muted-foreground">in</span>
+                <span className="text-sm font-bold text-foreground/50">in</span>
               </div>
             )}
           </div>
@@ -197,16 +203,16 @@ export default function SettingsPage() {
       </Card>
 
       {/* Notifications */}
-      <Card>
+      <Card className="bg-card">
         <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-base">
+          <CardTitle className="flex items-center gap-2 text-base font-black">
             <Bell className="h-4 w-4" />
-            Reminders
+            {t.reminders}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label>Daily Reminder</Label>
+            <Label>{t.dailyReminder}</Label>
             <Switch
               checked={isEnabled}
               onCheckedChange={(checked) =>
@@ -217,15 +223,15 @@ export default function SettingsPage() {
           </div>
 
           {permission === "denied" && (
-            <p className="text-xs text-muted-foreground">
-              Notifications are blocked. Please enable them in your browser settings.
+            <p className="text-xs font-bold text-foreground/50">
+              {t.notificationsBlocked}
             </p>
           )}
 
           {isEnabled && (
             <>
               <div className="flex items-center justify-between">
-                <Label>Reminder Time</Label>
+                <Label>{t.reminderTime}</Label>
                 <Input
                   type="time"
                   value={time}
@@ -240,7 +246,7 @@ export default function SettingsPage() {
                 onClick={sendTestNotification}
                 className="w-full"
               >
-                Send Test Notification
+                {t.sendTestNotification}
               </Button>
             </>
           )}
@@ -248,23 +254,23 @@ export default function SettingsPage() {
       </Card>
 
       {/* Data */}
-      <Card>
+      <Card className="bg-card">
         <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-base">
+          <CardTitle className="flex items-center gap-2 text-base font-black">
             <Download className="h-4 w-4" />
-            Your Data
+            {t.yourData}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="text-sm text-muted-foreground">
-            {entries.length} entries · {streak} day streak
+          <div className="text-sm font-bold text-foreground/50">
+            {entries.length} {t.entries} · {streak} {t.dayStreak}
           </div>
           <div className="grid grid-cols-2 gap-2">
             <Button variant="outline" onClick={handleExportCSV}>
-              Export CSV
+              {t.exportCSV}
             </Button>
             <Button variant="outline" onClick={handleExportJSON}>
-              Export JSON
+              {t.exportJSON}
             </Button>
           </div>
         </CardContent>

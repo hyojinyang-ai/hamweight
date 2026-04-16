@@ -3,22 +3,16 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Hamster } from "@/components/hamster/Hamster";
 import { STREAK_MILESTONES } from "@/lib/constants";
+import { useStore } from "@/lib/store";
+import { getTranslations } from "@/lib/i18n";
+import { Flame } from "lucide-react";
 
 interface StreakCelebrationProps {
   streak: number;
   show: boolean;
   onClose: () => void;
 }
-
-const messages: Record<number, { title: string; subtitle: string }> = {
-  3: { title: "3 Day Streak!", subtitle: "You're building a habit!" },
-  7: { title: "1 Week Streak!", subtitle: "Incredible consistency!" },
-  14: { title: "2 Week Streak!", subtitle: "You're unstoppable!" },
-  30: { title: "30 Day Streak!", subtitle: "A whole month! Amazing!" },
-  100: { title: "100 Day Streak!", subtitle: "You're a legend!" },
-};
 
 function Particle({ delay, x }: { delay: number; x: number }) {
   const colors = ["#f08c70", "#fdd9b5", "#ff6b6b", "#ffd93d", "#6bcb77"];
@@ -53,6 +47,9 @@ function Particle({ delay, x }: { delay: number; x: number }) {
 
 export function StreakCelebration({ streak, show, onClose }: StreakCelebrationProps) {
   const [particles, setParticles] = useState<{ id: number; delay: number; x: number }[]>([]);
+  const profile = useStore((s) => s.profile);
+  const lang = profile?.language ?? "en";
+  const t = getTranslations(lang);
 
   useEffect(() => {
     if (show) {
@@ -69,9 +66,10 @@ export function StreakCelebration({ streak, show, onClose }: StreakCelebrationPr
   }, [show, onClose]);
 
   const milestone = STREAK_MILESTONES.find((m) => m === streak);
-  const message = milestone ? messages[milestone] : null;
+  if (!milestone) return null;
 
-  if (!message) return null;
+  const title = t.streakTitle(streak);
+  const subtitle = t.streakSubtitle(streak);
 
   return (
     <AnimatePresence>
@@ -89,37 +87,30 @@ export function StreakCelebration({ streak, show, onClose }: StreakCelebrationPr
             ))}
 
             <motion.div
-              className="flex flex-col items-center gap-4 rounded-3xl bg-card p-8 shadow-2xl"
+              className="flex flex-col items-center gap-4 rounded-xl bg-secondary p-8 [border:var(--neo-border)] [box-shadow:var(--neo-shadow-lg)]"
               initial={{ scale: 0.5, y: 50 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.5, y: 50 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               <motion.div
-                animate={{ rotate: [0, -10, 10, -10, 10, 0] }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <Hamster expression="imTheBest" size="xl" />
-              </motion.div>
-
-              <motion.div
                 className="text-center"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <h2 className="text-3xl font-bold tracking-tight">{message.title}</h2>
-                <p className="mt-1 text-muted-foreground">{message.subtitle}</p>
+                <h2 className="text-3xl font-black tracking-tight">{title}</h2>
+                <p className="mt-1 font-bold text-foreground/60">{subtitle}</p>
               </motion.div>
 
               <motion.div
-                className="flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2"
+                className="flex items-center gap-2 rounded-xl bg-card px-4 py-2 [border:var(--neo-border)] [box-shadow:var(--neo-shadow-sm)]"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                <span className="text-2xl">🔥</span>
-                <span className="text-xl font-bold text-primary">{streak} days</span>
+                <Flame className="h-6 w-6 text-primary" strokeWidth={2.5} />
+                <span className="text-xl font-bold text-primary">{streak} {t.days}</span>
               </motion.div>
             </motion.div>
           </div>

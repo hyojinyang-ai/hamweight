@@ -6,11 +6,12 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Hamster } from "@/components/hamster/Hamster";
 import { useStore } from "@/lib/store";
 import { getTimeOfDay, kgToLb, lbToKg } from "@/lib/utils";
+import { getTranslations } from "@/lib/i18n";
 import type { WeightEntry, BodyMeasurements } from "@/lib/types";
-import { Ruler } from "lucide-react";
+import { Ruler, Sunrise, Sun, CloudSun, Moon, BedDouble, Dumbbell, PersonStanding } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface WeightSheetProps {
   open: boolean;
@@ -24,6 +25,8 @@ export function WeightSheet({ open, onOpenChange, onSave }: WeightSheetProps) {
   const getLatestEntry = useStore((s) => s.getLatestEntry);
 
   const unit = profile?.unit ?? "metric";
+  const lang = profile?.language ?? "en";
+  const t = getTranslations(lang);
   const latestEntry = getLatestEntry();
   const defaultWeight = latestEntry?.weight ?? 70;
 
@@ -52,7 +55,6 @@ export function WeightSheet({ open, onOpenChange, onSave }: WeightSheetProps) {
 
     const weightKg = unit === "imperial" ? lbToKg(weightNum) : weightNum;
 
-    // Only include measurements if any are filled
     const hasMeasurements = Object.values(measurements).some((v) => v && v > 0);
 
     addEntry({
@@ -81,27 +83,32 @@ export function WeightSheet({ open, onOpenChange, onSave }: WeightSheetProps) {
     setWeight((current + delta * step).toFixed(1));
   };
 
-  const timeOptions: { value: WeightEntry["timeOfDay"]; label: string; emoji: string }[] = [
-    { value: "morning", label: "Morning", emoji: "🌅" },
-    { value: "lunch", label: "Lunch", emoji: "🌞" },
-    { value: "afternoon", label: "Afternoon", emoji: "🌤️" },
-    { value: "evening", label: "Evening", emoji: "🌙" },
+  const timeOptions: { value: WeightEntry["timeOfDay"]; labelKey: "morning" | "lunch" | "afternoon" | "evening"; icon: LucideIcon }[] = [
+    { value: "morning", labelKey: "morning", icon: Sunrise },
+    { value: "lunch", labelKey: "lunch", icon: Sun },
+    { value: "afternoon", labelKey: "afternoon", icon: CloudSun },
+    { value: "evening", labelKey: "evening", icon: Moon },
   ];
 
-  const exerciseOptions: { value: WeightEntry["exerciseContext"]; label: string; emoji: string }[] = [
-    { value: "none", label: "No exercise", emoji: "😴" },
-    { value: "before", label: "Before workout", emoji: "💪" },
-    { value: "after", label: "After workout", emoji: "🏃" },
+  const exerciseOptions: { value: WeightEntry["exerciseContext"]; labelKey: "noExercise" | "beforeWorkout" | "afterWorkout"; icon: LucideIcon }[] = [
+    { value: "none", labelKey: "noExercise", icon: BedDouble },
+    { value: "before", labelKey: "beforeWorkout", icon: Dumbbell },
+    { value: "after", labelKey: "afterWorkout", icon: PersonStanding },
+  ];
+
+  const measurementFields: { key: keyof BodyMeasurements; labelKey: "waist" | "hips" | "chest" | "arms" | "thighs" }[] = [
+    { key: "waist", labelKey: "waist" },
+    { key: "hips", labelKey: "hips" },
+    { key: "chest", labelKey: "chest" },
+    { key: "arms", labelKey: "arms" },
+    { key: "thighs", labelKey: "thighs" },
   ];
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="h-auto max-h-[85vh] rounded-t-3xl">
         <SheetHeader className="text-center">
-          <div className="flex justify-center py-2">
-            <Hamster expression="measuringWeight" size="lg" />
-          </div>
-          <SheetTitle>Log your weight</SheetTitle>
+          <SheetTitle>{t.logYourWeight}</SheetTitle>
         </SheetHeader>
 
         <div className="space-y-6 py-4">
@@ -138,18 +145,18 @@ export function WeightSheet({ open, onOpenChange, onSave }: WeightSheetProps) {
           </div>
 
           {/* Smart Defaults Display */}
-          <div className="rounded-lg bg-muted p-3 text-center text-sm">
-            <span className="text-muted-foreground">
-              {timeOptions.find((t) => t.value === timeOfDay)?.emoji}{" "}
-              {timeOptions.find((t) => t.value === timeOfDay)?.label} ·{" "}
-              {exerciseOptions.find((e) => e.value === exerciseContext)?.emoji}{" "}
-              {exerciseOptions.find((e) => e.value === exerciseContext)?.label}
+          <div className="rounded-xl bg-muted p-3 text-center text-sm font-medium [border:var(--neo-border)]">
+            <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+              {(() => { const TimeIcon = timeOptions.find((o) => o.value === timeOfDay)?.icon; return TimeIcon ? <TimeIcon className="inline h-3.5 w-3.5" /> : null; })()}
+              {t[timeOptions.find((o) => o.value === timeOfDay)?.labelKey ?? "morning"]} ·{" "}
+              {(() => { const ExIcon = exerciseOptions.find((o) => o.value === exerciseContext)?.icon; return ExIcon ? <ExIcon className="inline h-3.5 w-3.5" /> : null; })()}
+              {t[exerciseOptions.find((o) => o.value === exerciseContext)?.labelKey ?? "noExercise"]}
             </span>
             <button
               onClick={() => setShowOptions(!showOptions)}
               className="ml-2 text-primary underline"
             >
-              {showOptions ? "Hide" : "Change"}
+              {showOptions ? t.hide : t.change}
             </button>
           </div>
 
@@ -157,34 +164,40 @@ export function WeightSheet({ open, onOpenChange, onSave }: WeightSheetProps) {
           {showOptions && (
             <div className="space-y-4">
               <div>
-                <Label className="text-sm text-muted-foreground">Time of day</Label>
+                <Label className="text-sm text-muted-foreground">{t.timeOfDay}</Label>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {timeOptions.map((option) => (
-                    <Button
-                      key={option.value}
-                      variant={timeOfDay === option.value ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setTimeOfDay(option.value)}
-                    >
-                      {option.emoji} {option.label}
-                    </Button>
-                  ))}
+                  {timeOptions.map((option) => {
+                    const Icon = option.icon;
+                    return (
+                      <Button
+                        key={option.value}
+                        variant={timeOfDay === option.value ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setTimeOfDay(option.value)}
+                      >
+                        <Icon className="mr-1 h-3.5 w-3.5" /> {t[option.labelKey]}
+                      </Button>
+                    );
+                  })}
                 </div>
               </div>
 
               <div>
-                <Label className="text-sm text-muted-foreground">Exercise</Label>
+                <Label className="text-sm text-muted-foreground">{t.exercise}</Label>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {exerciseOptions.map((option) => (
-                    <Button
-                      key={option.value}
-                      variant={exerciseContext === option.value ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setExerciseContext(option.value)}
-                    >
-                      {option.emoji} {option.label}
-                    </Button>
-                  ))}
+                  {exerciseOptions.map((option) => {
+                    const Icon = option.icon;
+                    return (
+                      <Button
+                        key={option.value}
+                        variant={exerciseContext === option.value ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setExerciseContext(option.value)}
+                      >
+                        <Icon className="mr-1 h-3.5 w-3.5" /> {t[option.labelKey]}
+                      </Button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -193,23 +206,17 @@ export function WeightSheet({ open, onOpenChange, onSave }: WeightSheetProps) {
           {/* Body Measurements (optional) */}
           <button
             onClick={() => setShowMeasurements(!showMeasurements)}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-muted-foreground/30 p-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border-[2.5px] border-dashed border-foreground/20 p-3 text-sm font-bold text-foreground/50 transition-colors hover:border-primary hover:text-primary"
           >
             <Ruler className="h-4 w-4" />
-            {showMeasurements ? "Hide" : "Add"} body measurements
+            {showMeasurements ? t.hideBodyMeasurements : t.addBodyMeasurements}
           </button>
 
           {showMeasurements && (
             <div className="grid grid-cols-2 gap-3">
-              {[
-                { key: "waist" as const, label: "Waist" },
-                { key: "hips" as const, label: "Hips" },
-                { key: "chest" as const, label: "Chest" },
-                { key: "arms" as const, label: "Arms" },
-                { key: "thighs" as const, label: "Thighs" },
-              ].map(({ key, label }) => (
+              {measurementFields.map(({ key, labelKey }) => (
                 <div key={key}>
-                  <Label className="text-xs text-muted-foreground">{label}</Label>
+                  <Label className="text-xs text-muted-foreground">{t[labelKey]}</Label>
                   <div className="flex items-center gap-1">
                     <Input
                       type="number"
@@ -230,7 +237,7 @@ export function WeightSheet({ open, onOpenChange, onSave }: WeightSheetProps) {
 
           {/* Save Button */}
           <Button onClick={handleSave} className="w-full" size="lg">
-            Save
+            {t.save}
           </Button>
         </div>
       </SheetContent>

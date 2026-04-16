@@ -1,23 +1,25 @@
 // app/history/page.tsx
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { format } from "date-fns";
-import { Trash2 } from "lucide-react";
+import { Trash2, Sunrise, Sun, CloudSun, Moon, Dumbbell, PersonStanding, Flame } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Hamster } from "@/components/hamster/Hamster";
-import { TrendChart } from "@/components/charts/TrendChart";
+import { ActivityHeatmap } from "@/components/dashboard/ActivityHeatmap";
 import { useStore } from "@/lib/store";
 import { formatWeight } from "@/lib/utils";
+import { getTranslations } from "@/lib/i18n";
 
 export default function HistoryPage() {
   const entries = useStore((s) => s.entries);
   const profile = useStore((s) => s.profile);
   const deleteEntry = useStore((s) => s.deleteEntry);
-  const [timeRange, setTimeRange] = useState<7 | 30>(7);
+  const streak = useStore((s) => s.streak);
 
   const unit = profile?.unit ?? "metric";
+  const lang = profile?.language ?? "en";
+  const t = getTranslations(lang);
 
   const sortedEntries = useMemo(() => {
     return [...entries].sort(
@@ -25,77 +27,81 @@ export default function HistoryPage() {
     );
   }, [entries]);
 
-  const timeEmoji: Record<string, string> = {
-    morning: "🌅",
-    lunch: "🌞",
-    afternoon: "🌤️",
-    evening: "🌙",
+  const timeIcons: Record<string, React.ReactNode> = {
+    morning: <Sunrise className="inline h-3 w-3" />,
+    lunch: <Sun className="inline h-3 w-3" />,
+    afternoon: <CloudSun className="inline h-3 w-3" />,
+    evening: <Moon className="inline h-3 w-3" />,
   };
 
-  const exerciseEmoji: Record<string, string> = {
-    none: "",
-    before: "💪",
-    after: "🏃",
+  const exerciseIcons: Record<string, React.ReactNode> = {
+    none: null,
+    before: <Dumbbell className="inline h-3 w-3" />,
+    after: <PersonStanding className="inline h-3 w-3" />,
   };
 
   return (
-    <div className="mx-auto max-w-md space-y-4 p-4">
-      <header className="flex items-center justify-between">
+    <div className="mx-auto max-w-md space-y-4 px-4 py-6">
+      <header className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold">History</h1>
-          <p className="text-sm text-muted-foreground">Your weight journey</p>
+          <h1 className="text-2xl font-black tracking-tight">{t.history}</h1>
+          <p className="text-sm font-bold text-foreground/50">{t.historySubtitle}</p>
         </div>
-        <Hamster expression="checkingHealth" size="sm" />
+        <img
+          src="/icons/icon-192.png"
+          alt="Huahuachi icon"
+          className="h-16 w-16 scale-x-[-1] rounded-2xl object-contain" style={{ backgroundColor: "rgb(249, 247, 241)" }}
+        />
       </header>
 
-      {/* Time Range Toggle */}
-      <div className="flex gap-2">
-        <Button
-          variant={timeRange === 7 ? "default" : "outline"}
-          size="sm"
-          onClick={() => setTimeRange(7)}
-        >
-          7 Days
-        </Button>
-        <Button
-          variant={timeRange === 30 ? "default" : "outline"}
-          size="sm"
-          onClick={() => setTimeRange(30)}
-        >
-          30 Days
-        </Button>
-      </div>
 
-      {/* Chart */}
-      <TrendChart days={timeRange} />
+      <ActivityHeatmap mode="exercise" />
 
       {/* Entry List */}
-      <div className="space-y-2">
-        <h2 className="text-sm font-medium text-muted-foreground">All Entries</h2>
+      <div className="space-y-2.5">
+        <h2 className="text-xs font-black uppercase tracking-wider text-foreground/50">{t.allEntries}</h2>
+        <div className="sticky top-2 z-10 bg-background pb-1">
+          <Card className="flex items-center justify-between gap-3 p-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 [border:var(--neo-border)]">
+                <Flame className="h-5 w-5 text-foreground" strokeWidth={2.5} />
+              </div>
+              <div>
+                <div className="text-sm font-black">{streak} {t.dayStreak}</div>
+                <div className="text-xs font-bold text-foreground/50">
+                  {lang === "ko" ? "현재 연속 기록" : "Current logging streak"}
+                </div>
+              </div>
+            </div>
+            <div className="rounded-xl bg-secondary px-3 py-1.5 text-xs font-black [border:var(--neo-border)]">
+              {sortedEntries.length} {t.entries}
+            </div>
+          </Card>
+        </div>
         {sortedEntries.length === 0 ? (
-          <Card className="p-6 text-center text-muted-foreground">
-            No entries yet. Start logging!
+          <Card className="p-6 text-center font-bold text-foreground/50">
+            {t.noEntriesYet}
           </Card>
         ) : (
           sortedEntries.map((entry) => (
-            <Card key={entry.id} className="flex items-center justify-between p-3">
+            <Card key={entry.id} className="flex items-center justify-between p-3.5">
               <div>
-                <div className="font-medium">
+                <div className="font-bold">
                   {formatWeight(entry.weight, unit)}
                 </div>
-                <div className="text-xs text-muted-foreground">
+                <div className="flex items-center gap-1 text-xs font-medium text-foreground/50">
                   {format(new Date(entry.timestamp), "MMM d, yyyy h:mm a")}
                   {" · "}
-                  {timeEmoji[entry.timeOfDay]}
-                  {exerciseEmoji[entry.exerciseContext] && (
-                    <> {exerciseEmoji[entry.exerciseContext]}</>
+                  {timeIcons[entry.timeOfDay]}
+                  {exerciseIcons[entry.exerciseContext] && (
+                    <> {exerciseIcons[entry.exerciseContext]}</>
                   )}
                 </div>
               </div>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                className="h-8 w-8 text-foreground/40 hover:text-destructive"
                 onClick={() => deleteEntry(entry.id)}
               >
                 <Trash2 className="h-4 w-4" />

@@ -18,6 +18,7 @@ export interface WeightEntry {
 export interface UserProfile {
   height: number; // always cm
   unit: 'metric' | 'imperial';
+  language: 'en' | 'ko';
   createdAt: string;
 }
 

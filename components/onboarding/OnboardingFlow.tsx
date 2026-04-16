@@ -1,7 +1,7 @@
 // components/onboarding/OnboardingFlow.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,15 +14,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { Hamster } from "@/components/hamster/Hamster";
 import { useStore } from "@/lib/store";
 import { getTimeOfDay, ftInToCm } from "@/lib/utils";
+import { getTranslations, type Locale } from "@/lib/i18n";
+import type { UserProfile } from "@/lib/types";
 
 type Step = "welcome" | "setup" | "firstWeight";
 
 export function OnboardingFlow() {
   const [step, setStep] = useState<Step>("welcome");
   const [unit, setUnit] = useState<"metric" | "imperial">("metric");
+  const [lang, setLang] = useState<Locale>("en");
   const [heightCm, setHeightCm] = useState("170");
   const [heightFt, setHeightFt] = useState("5");
   const [heightIn, setHeightIn] = useState("7");
@@ -32,21 +34,45 @@ export function OnboardingFlow() {
   const addEntry = useStore((s) => s.addEntry);
   const completeOnboarding = useStore((s) => s.completeOnboarding);
 
-  const handleSetupNext = () => {
+  const t = getTranslations(lang);
+
+  const buildDraftProfile = (
+    overrides: Partial<Pick<UserProfile, "language" | "unit">> = {}
+  ): UserProfile => {
+    const nextUnit = overrides.unit ?? unit;
+    const nextLanguage = overrides.language ?? lang;
     const height =
-      unit === "metric"
-        ? parseFloat(heightCm)
-        : ftInToCm(parseInt(heightFt), parseInt(heightIn));
+      nextUnit === "metric"
+        ? parseFloat(heightCm) || 170
+        : ftInToCm(parseInt(heightFt) || 5, parseInt(heightIn) || 7);
 
-    setProfile({
+    return {
       height,
-      unit,
+      unit: nextUnit,
+      language: nextLanguage,
       createdAt: new Date().toISOString(),
-    });
+    };
+  };
 
-    // Set default weight based on unit
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  const handleLanguageChange = (nextLang: Locale) => {
+    setLang(nextLang);
+    setProfile(buildDraftProfile({ language: nextLang }));
+  };
+
+  const handleUnitChange = (nextUnit: "metric" | "imperial") => {
+    setUnit(nextUnit);
+    setProfile(buildDraftProfile({ unit: nextUnit }));
+  };
+
+  const handleSetupNext = () => {
+    setProfile(buildDraftProfile());
+
     if (unit === "imperial") {
-      setWeight("154"); // ~70kg
+      setWeight("154");
     }
 
     setStep("firstWeight");
@@ -77,15 +103,13 @@ export function OnboardingFlow() {
             exit={{ opacity: 0, y: -20 }}
             className="w-full max-w-sm"
           >
-            <Card className="p-8 text-center">
-              <Hamster expression="happy" size="xl" />
-              <h1 className="mt-4 text-2xl font-bold">Hi! I&apos;m Ham!</h1>
-              <p className="mt-2 text-muted-foreground">
-                Welcome to HamWeight. Let&apos;s make tracking your weight simple
-                and fun!
+            <Card className="bg-secondary p-8 text-center">
+              <h1 className="text-3xl font-black">{t.welcome}</h1>
+              <p className="mt-2 font-medium text-foreground/60">
+                {t.welcomeDesc}
               </p>
-              <Button onClick={() => setStep("setup")} className="mt-6 w-full">
-                Get Started
+              <Button onClick={() => setStep("setup")} className="mt-6 w-full" size="lg">
+                {t.getStarted}
               </Button>
             </Card>
           </motion.div>
@@ -101,29 +125,44 @@ export function OnboardingFlow() {
           >
             <Card className="p-6">
               <div className="mb-6 text-center">
-                <Hamster expression="cheerUp" size="lg" />
-                <h2 className="mt-2 text-xl font-bold">Quick Setup</h2>
+                <h2 className="text-xl font-black">{t.quickSetup}</h2>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <Label>Preferred Units</Label>
+                  <Label>{t.language}</Label>
                   <Select
-                    value={unit}
-                    onValueChange={(v) => setUnit(v as "metric" | "imperial")}
+                    value={lang}
+                    onValueChange={(v) => handleLanguageChange(v as Locale)}
                   >
                     <SelectTrigger className="mt-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="metric">Metric (kg, cm)</SelectItem>
-                      <SelectItem value="imperial">Imperial (lb, ft/in)</SelectItem>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="ko">한국어</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <Label>Your Height</Label>
+                  <Label>{t.preferredUnits}</Label>
+                  <Select
+                    value={unit}
+                    onValueChange={(v) => handleUnitChange(v as "metric" | "imperial")}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="metric">{t.metricUnits}</SelectItem>
+                      <SelectItem value="imperial">{t.imperialUnits}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>{t.yourHeight}</Label>
                   {unit === "metric" ? (
                     <div className="mt-1 flex items-center gap-2">
                       <Input
@@ -155,7 +194,7 @@ export function OnboardingFlow() {
                 </div>
 
                 <Button onClick={handleSetupNext} className="w-full">
-                  Continue
+                  {t.continue}
                 </Button>
               </div>
             </Card>
@@ -172,10 +211,9 @@ export function OnboardingFlow() {
           >
             <Card className="p-6">
               <div className="mb-6 text-center">
-                <Hamster expression="measuringWeight" size="lg" />
-                <h2 className="mt-2 text-xl font-bold">Let&apos;s start!</h2>
-                <p className="text-sm text-muted-foreground">
-                  What&apos;s your weight today?
+                <h2 className="text-xl font-black">{t.letsStart}</h2>
+                <p className="text-sm font-medium text-foreground/60">
+                  {t.whatsYourWeight}
                 </p>
               </div>
 
@@ -194,7 +232,7 @@ export function OnboardingFlow() {
                 </div>
 
                 <Button onClick={handleComplete} className="w-full">
-                  Save & Begin
+                  {t.saveBegin}
                 </Button>
               </div>
             </Card>
