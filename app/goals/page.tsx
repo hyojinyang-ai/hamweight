@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { format, differenceInDays } from "date-fns";
-import { Target, TrendingDown, TrendingUp, Minus, MoreVertical, ArrowRight, Calendar, Flag, Plus, Pencil } from "lucide-react";
+import { TrendingDown, TrendingUp, Minus, MoreVertical, ArrowRight, Calendar, Flag, Plus, Pencil } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
