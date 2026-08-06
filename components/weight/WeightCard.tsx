@@ -2,6 +2,7 @@
 "use client";
 
 import { useMemo } from "react";
+import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { WeightChangeBadge } from "@/components/weight/WeightChangeBadge";
 import { useStore } from "@/lib/store";
@@ -29,8 +30,23 @@ export function WeightCard() {
   }, [entries, latestEntry]);
 
   return (
-    <Card className="relative overflow-hidden bg-card p-5 sm:p-6">
-      <div className="flex flex-col items-center gap-3">
+    <Card className="relative overflow-hidden p-0">
+      {/* Hero Image */}
+      <Image
+        src="/images/myweight-hero.png"
+        alt="MyWeight"
+        width={800}
+        height={400}
+        sizes="(max-width: 448px) 100vw, 448px"
+        className="w-full object-cover"
+        priority
+      />
+
+      {/* Divider */}
+      <div className="border-t-[2.5px] border-foreground/15" />
+
+      {/* Weight Display */}
+      <div className="flex flex-col items-center gap-3 p-5 sm:p-6">
         <div className="text-center">
           {latestEntry ? (
             <>

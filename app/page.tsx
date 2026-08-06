@@ -2,7 +2,6 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { WeightCard } from "@/components/weight/WeightCard";
@@ -49,19 +48,6 @@ export default function Home() {
   return (
     <>
       <div className="mx-auto max-w-md space-y-4 px-4 py-6">
-        {/* Hero Image */}
-        <div className="overflow-hidden rounded-[1.4rem] [border:var(--neo-border)] [box-shadow:var(--neo-shadow)]">
-          <Image
-            src="/images/myweight-hero.png"
-            alt="MyWeight"
-            width={800}
-            height={400}
-            sizes="(max-width: 448px) 100vw, 448px"
-            className="w-full object-cover"
-            priority
-          />
-        </div>
-
         <WeightCard />
         <GoalProgressRing />
 
