@@ -1,11 +1,17 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { useStore } from "@/lib/store";
 import { formatWeight } from "@/lib/utils";
 import { getTranslations } from "@/lib/i18n";
 
-export function GoalProgressRing() {
+interface GoalProgressRingProps {
+  onLogWeight?: () => void;
+  ctaLabel?: string;
+}
+
+export function GoalProgressRing({ onLogWeight, ctaLabel }: GoalProgressRingProps) {
   const goal = useStore((s) => s.goal);
   const profile = useStore((s) => s.profile);
   const getLatestEntry = useStore((s) => s.getLatestEntry);
@@ -15,10 +21,20 @@ export function GoalProgressRing() {
   const lang = profile?.language ?? "en";
   const t = getTranslations(lang);
 
+  const cta = onLogWeight ? (
+    <motion.button
+      whileTap={{ scale: 0.97, y: 2 }}
+      onClick={onLogWeight}
+      className="w-full rounded-full bg-primary py-4 text-center text-base font-black uppercase tracking-[0.12em] text-primary-foreground [border:var(--neo-border)] [box-shadow:var(--neo-shadow)] active:[box-shadow:0px_0px_0px_0px_transparent]"
+    >
+      {ctaLabel}
+    </motion.button>
+  ) : null;
+
   if (!goal || !latestEntry) {
     return (
-      <Card className="p-4">
-        <div className="flex items-center justify-between">
+      <Card className="overflow-hidden p-0">
+        <div className="flex items-center justify-between p-4">
           <div>
             <div className="text-sm font-black text-foreground/60">{t.noGoalYet}</div>
             <div className="mt-0.5 text-xs font-bold text-foreground/40">{t.noGoalEncouragement}</div>
@@ -27,6 +43,12 @@ export function GoalProgressRing() {
             {t.setGoal}
           </a>
         </div>
+        {cta && (
+          <>
+            <div className="border-t-[2.5px] border-foreground/15" />
+            <div className="p-3">{cta}</div>
+          </>
+        )}
       </Card>
     );
   }
@@ -62,33 +84,42 @@ export function GoalProgressRing() {
   const isGoalReached = progress >= 1;
 
   return (
-    <Card className="p-4">
-      <div className="mb-2 flex items-center justify-between">
-        <div className="text-sm font-black">{t.progress}</div>
-        <div className="text-sm font-black">{percentage}%</div>
+    <Card className="overflow-hidden p-0">
+      <div className="p-4">
+        <div className="mb-2 flex items-center justify-between">
+          <div className="text-sm font-black">{t.progress}</div>
+          <div className="text-sm font-black">{percentage}%</div>
+        </div>
+
+        <div className="h-5 overflow-hidden rounded-full bg-muted [border:var(--neo-border)]" role="progressbar" aria-valuenow={percentage} aria-valuemin={0} aria-valuemax={100} aria-label={`${t.progress} ${percentage}%`}>
+          <div
+            className={`h-full rounded-full transition-all duration-700 ease-out ${isGoalReached ? "bg-success" : "bg-primary"}`}
+            style={{ width: `${percentage}%` }}
+          />
+        </div>
+
+        <div className="mt-3 flex items-center justify-between text-sm">
+          <div className="font-bold text-foreground/70">
+            {isGoalReached ? (
+              <span className="text-success">{t.goalReached}</span>
+            ) : (
+              <>
+                {formatWeight(remainingWeight, unit).split(" ")[0]} {unit === "imperial" ? "lb" : "kg"} {t.toGo}
+              </>
+            )}
+          </div>
+          <div className="font-bold text-foreground/60">
+            {t.target}: {formatWeight(targetWeight, unit)}
+          </div>
+        </div>
       </div>
 
-      <div className="h-5 overflow-hidden rounded-full bg-muted [border:var(--neo-border)]" role="progressbar" aria-valuenow={percentage} aria-valuemin={0} aria-valuemax={100} aria-label={`${t.progress} ${percentage}%`}>
-        <div
-          className={`h-full rounded-full transition-all duration-700 ease-out ${isGoalReached ? "bg-success" : "bg-primary"}`}
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
-
-      <div className="mt-3 flex items-center justify-between text-sm">
-        <div className="font-bold text-foreground/70">
-          {isGoalReached ? (
-            <span className="text-success">{t.goalReached}</span>
-          ) : (
-            <>
-              {formatWeight(remainingWeight, unit).split(" ")[0]} {unit === "imperial" ? "lb" : "kg"} {t.toGo}
-            </>
-          )}
-        </div>
-        <div className="font-bold text-foreground/60">
-          {t.target}: {formatWeight(targetWeight, unit)}
-        </div>
-      </div>
+      {cta && (
+        <>
+          <div className="border-t-[2.5px] border-foreground/15" />
+          <div className="p-3">{cta}</div>
+        </>
+      )}
     </Card>
   );
 }
