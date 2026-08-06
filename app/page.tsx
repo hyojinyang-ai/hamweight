@@ -70,7 +70,7 @@ export default function Home() {
           whileTap={{ scale: 0.97, y: 2 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
           onClick={() => setSheetOpen(true)}
-          className="w-full rounded-full bg-success py-4 text-center text-base font-black uppercase tracking-[0.12em] text-success-foreground [border:var(--neo-border)] [box-shadow:var(--neo-shadow)] active:[box-shadow:0px_0px_0px_0px_transparent]"
+          className="w-full rounded-full bg-primary py-4 text-center text-base font-black uppercase tracking-[0.12em] text-primary-foreground [border:var(--neo-border)] [box-shadow:var(--neo-shadow)] active:[box-shadow:0px_0px_0px_0px_transparent]"
         >
           {hasEntries ? t.logWeight : t.getStarted}
         </motion.button>
