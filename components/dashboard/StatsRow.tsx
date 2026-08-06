@@ -30,11 +30,11 @@ export function StatsRow() {
       weeklyChange = sorted[sorted.length - 1].weight - sorted[0].weight;
     }
 
-    let bmi = 0;
+    let bmi: number | null = null;
     let bmiCategory = null;
     if (latestEntry && profile?.height) {
       bmi = calculateBMI(latestEntry.weight, profile.height);
-      bmiCategory = getBMICategory(bmi);
+      if (bmi !== null) bmiCategory = getBMICategory(bmi);
     }
 
     return { weeklyChange, bmi, bmiCategory };
@@ -72,7 +72,7 @@ export function StatsRow() {
       {/* BMI */}
       <Card className="bg-card p-3.5 text-center">
         <div className="text-2xl font-bold tracking-tight">
-          {bmi > 0 ? bmi.toFixed(1) : "—"}
+          {bmi !== null && bmi > 0 ? bmi.toFixed(1) : "—"}
         </div>
         <div className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.12em] text-foreground/50">
           {bmiCategory?.label ?? "BMI"}

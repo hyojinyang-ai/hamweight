@@ -24,6 +24,15 @@ const translations = {
     lastDays: (n: number) => `Last ${n} Days`,
     noDataYet: "No data yet. Start logging!",
     logMoreDays: "Log more days to see trends",
+    increased: "Increased",
+    decreased: "Decreased",
+    noChange: "No change",
+    firstLog: "First log",
+    fromLastLog: "from last log",
+    weightChangeChart: "Weight change",
+    weightChangeChartSubtitle: "Up and down by log",
+    lastChanges: (n: number) => `Last ${n} changes`,
+    noChangesYet: "Log at least two weights to see changes.",
 
     // Goals
     goals: "Goals",
@@ -72,16 +81,21 @@ const translations = {
 
     // Onboarding
     welcome: "Welcome!",
-    welcomeDesc: "Let's make tracking your weight simple and fun!",
+    welcomeDesc: "Track your weight. Build streaks. See progress. No account needed — your data stays on this device.",
     quickSetup: "Quick Setup",
     preferredUnits: "Preferred Units",
     metricUnits: "Metric (kg, cm)",
     imperialUnits: "Imperial (lb, ft/in)",
     yourHeight: "Your Height",
+    heightWhy: "Used for BMI — stays on your device",
     continue: "Continue",
-    letsStart: "Let's start!",
+    letsStart: "Your first log",
     whatsYourWeight: "What's your weight today?",
+    firstWeightHint: "Don't overthink it — you can log again anytime.",
     saveBegin: "Save & Begin",
+    stepOf: (current: number, total: number) => `${current} of ${total}`,
+    onboardingComplete: "You're all set!",
+    whatToExpect: "Log daily to build streaks. Set a goal to track progress. That's it.",
 
     // WeightSheet
     logYourWeight: "Log your weight",
@@ -104,6 +118,22 @@ const translations = {
     arms: "Arms",
     thighs: "Thighs",
     save: "Save",
+    weightSaved: (w: string) => `Logged! ${w}`,
+    deleteConfirmTitle: "Delete Entry?",
+    deleteConfirmDesc: "This entry will be permanently removed. This can't be undone.",
+    delete: "Delete",
+    cancel: "Cancel",
+    invalidWeight: "Enter a valid weight",
+    weightTooHigh: "Weight seems too high",
+
+    // Emotional support
+    fluctuationNormal: "Fluctuations are totally normal",
+    freshStart: "Fresh start — let's go!",
+    currentStreak: "Current logging streak",
+    keepItUp: "You showed up today. That's what counts.",
+    streakBroken: "Streaks reset, but your progress doesn't.",
+    noEntriesEncouragement: "Your first log is the hardest. After that, it's easy.",
+    noGoalEncouragement: "A goal gives your daily logs direction",
 
     // Celebration
     streakTitle: (n: number) => {
@@ -130,6 +160,22 @@ const translations = {
     // BMI
     bmi: "BMI",
     goalReached: "Goal Reached!",
+
+    // ActivityHeatmap
+    weightCalendar: "Weight Log Calendar",
+    exerciseCalendar: "Exercise Log Calendar",
+    loggedDays: (n: number) => `${n} logged days`,
+    exerciseDays: (n: number) => `${n} exercise days`,
+    notLogged: "Not logged",
+    logged: "Logged",
+    exerciseDone: "Exercised",
+    noHeatmapEntries: "No entries",
+    heatmapEntries: (n: number) => `${n} entries`,
+    weightLog: "Weight log",
+    exerciseLog: "Exercise log",
+    noWeightEntries: "No weight entries for this date.",
+    noExerciseEntries: "No exercise entries for this date.",
+    view: "View",
   },
   ko: {
     appName: "MyWeight",
@@ -151,6 +197,15 @@ const translations = {
     lastDays: (n: number) => `최근 ${n}일`,
     noDataYet: "아직 데이터가 없습니다. 기록을 시작하세요!",
     logMoreDays: "트렌드를 보려면 더 기록하세요",
+    increased: "증가",
+    decreased: "감소",
+    noChange: "변화 없음",
+    firstLog: "첫 기록",
+    fromLastLog: "이전 기록 대비",
+    weightChangeChart: "체중 변화",
+    weightChangeChartSubtitle: "기록별 증가와 감소",
+    lastChanges: (n: number) => `최근 ${n}개 변화`,
+    noChangesYet: "변화를 보려면 체중을 두 번 이상 기록하세요.",
 
     goals: "목표",
     goalsSubtitle: "진행 상황 확인",
@@ -196,16 +251,21 @@ const translations = {
     exportJSON: "JSON 내보내기",
 
     welcome: "환영합니다!",
-    welcomeDesc: "쉽고 재미있게 체중을 관리해보세요!",
+    welcomeDesc: "체중을 기록하고, 연속 기록을 쌓고, 진행 상황을 확인하세요. 계정 불필요 — 데이터는 이 기기에만 저장됩니다.",
     quickSetup: "간편 설정",
     preferredUnits: "선호 단위",
     metricUnits: "미터법 (kg, cm)",
     imperialUnits: "야드파운드법 (lb, ft/in)",
     yourHeight: "키",
+    heightWhy: "BMI 계산에 사용 — 기기에만 저장됩니다",
     continue: "계속",
-    letsStart: "시작해볼까요!",
+    letsStart: "첫 번째 기록",
     whatsYourWeight: "오늘 체중은 얼마인가요?",
+    firstWeightHint: "너무 고민하지 마세요 — 언제든 다시 기록할 수 있어요.",
     saveBegin: "저장 및 시작",
+    stepOf: (current: number, total: number) => `${total}단계 중 ${current}단계`,
+    onboardingComplete: "준비 완료!",
+    whatToExpect: "매일 기록해서 연속 기록을 쌓고, 목표를 설정해서 진행 상황을 확인하세요. 그게 전부예요.",
 
     logYourWeight: "체중 기록하기",
     timeOfDay: "시간대",
@@ -227,6 +287,22 @@ const translations = {
     arms: "팔",
     thighs: "허벅지",
     save: "저장",
+    weightSaved: (w: string) => `기록 완료! ${w}`,
+    deleteConfirmTitle: "기록 삭제",
+    deleteConfirmDesc: "이 기록은 영구적으로 삭제됩니다. 되돌릴 수 없습니다.",
+    delete: "삭제",
+    cancel: "취소",
+    invalidWeight: "유효한 체중을 입력하세요",
+    weightTooHigh: "체중이 너무 높은 것 같습니다",
+
+    // Emotional support
+    fluctuationNormal: "체중 변동은 완전히 정상이에요",
+    freshStart: "새로운 시작 — 힘내요!",
+    currentStreak: "현재 연속 기록",
+    keepItUp: "오늘도 기록했어요. 그게 중요해요.",
+    streakBroken: "연속 기록은 초기화되지만, 노력은 사라지지 않아요.",
+    noEntriesEncouragement: "첫 기록이 가장 어려워요. 그 다음부턴 쉬워요.",
+    noGoalEncouragement: "목표가 있으면 매일 기록에 방향이 생겨요",
 
     streakTitle: (n: number) => {
       if (n === 3) return "3일 연속!";
@@ -250,14 +326,26 @@ const translations = {
 
     bmi: "BMI",
     goalReached: "목표 달성!",
+
+    // ActivityHeatmap
+    weightCalendar: "체중 기록 캘린더",
+    exerciseCalendar: "운동 기록 캘린더",
+    loggedDays: (n: number) => `총 ${n}일 기록`,
+    exerciseDays: (n: number) => `총 ${n}일 운동`,
+    notLogged: "기록 없음",
+    logged: "기록됨",
+    exerciseDone: "운동함",
+    noHeatmapEntries: "기록 없음",
+    heatmapEntries: (n: number) => `${n}개 기록`,
+    weightLog: "체중 기록",
+    exerciseLog: "운동 기록",
+    noWeightEntries: "이 날짜에는 체중 기록이 없습니다.",
+    noExerciseEntries: "이 날짜에는 운동 기록이 없습니다.",
+    view: "보기",
   },
 } as const;
 
 export type TranslationKey = keyof typeof translations.en;
-
-export function t(locale: Locale, key: TranslationKey): (typeof translations)[Locale][TranslationKey] {
-  return translations[locale][key];
-}
 
 export function getTranslations(locale: Locale) {
   return translations[locale];

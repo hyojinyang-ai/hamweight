@@ -24,7 +24,7 @@ export function BottomNav() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-transparent">
       <div className="mx-auto max-w-md px-4 pb-3 pt-2">
-        <div className="flex min-h-[4.5rem] items-center justify-around rounded-full bg-background px-3 py-2 [box-shadow:var(--neo-shadow)]">
+        <div className="flex min-h-[4.5rem] items-center justify-around rounded-full bg-background px-3 py-2 [border:var(--neo-border)] [box-shadow:var(--neo-shadow)]">
         {navItems.map(({ href, icon: Icon, labelKey }) => {
           const isActive = pathname === href;
           return (

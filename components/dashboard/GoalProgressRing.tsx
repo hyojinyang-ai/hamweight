@@ -16,7 +16,19 @@ export function GoalProgressRing() {
   const t = getTranslations(lang);
 
   if (!goal || !latestEntry) {
-    return null;
+    return (
+      <Card className="p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-black text-foreground/60">{t.noGoalYet}</div>
+            <div className="mt-0.5 text-xs font-bold text-foreground/40">{t.noGoalEncouragement}</div>
+          </div>
+          <a href="/goals" className="rounded-xl bg-primary px-3.5 py-1.5 text-xs font-black text-primary-foreground [border:var(--neo-border)] hover:translate-x-[1px] hover:translate-y-[1px] hover:[box-shadow:2px_2px_0px_0px_hsl(var(--border))]">
+            {t.setGoal}
+          </a>
+        </div>
+      </Card>
+    );
   }
 
   const currentWeight = latestEntry.weight;
@@ -56,7 +68,7 @@ export function GoalProgressRing() {
         <div className="text-sm font-black">{percentage}%</div>
       </div>
 
-      <div className="h-4 overflow-hidden rounded-full bg-muted">
+      <div className="h-5 overflow-hidden rounded-full bg-muted [border:var(--neo-border)]" role="progressbar" aria-valuenow={percentage} aria-valuemin={0} aria-valuemax={100} aria-label={`${t.progress} ${percentage}%`}>
         <div
           className={`h-full rounded-full transition-all ${isGoalReached ? "bg-success" : "bg-primary"}`}
           style={{ width: `${percentage}%` }}

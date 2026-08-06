@@ -7,9 +7,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function calculateBMI(weightKg: number, heightCm: number): number {
+export function calculateBMI(weightKg: number, heightCm: number): number | null {
+  if (heightCm <= 0 || weightKg <= 0 || weightKg > 300 || heightCm > 300) return null
   const heightM = heightCm / 100
-  return weightKg / (heightM * heightM)
+  const bmi = weightKg / (heightM * heightM)
+  if (bmi < 5 || bmi > 100) return null
+  return bmi
 }
 
 export function getBMICategory(bmi: number) {
@@ -58,6 +61,39 @@ export function formatWeight(kg: number, unit: "metric" | "imperial"): string {
     return `${kgToLb(kg).toFixed(1)} lb`
   }
   return `${kg.toFixed(1)} kg`
+}
+
+export function formatWeightChange(deltaKg: number, unit: "metric" | "imperial"): string {
+  const convertedDelta = unit === "imperial" ? kgToLb(deltaKg) : deltaKg
+  const roundedDelta = Number(convertedDelta.toFixed(1))
+  const sign = roundedDelta > 0 ? "+" : roundedDelta < 0 ? "-" : ""
+  const label = unit === "imperial" ? "lb" : "kg"
+
+  return `${sign}${Math.abs(roundedDelta).toFixed(1)} ${label}`
+}
+
+export function getWeightChangeDirection(
+  deltaKg: number,
+  unit: "metric" | "imperial"
+): "increase" | "decrease" | "same" {
+  const convertedDelta = unit === "imperial" ? kgToLb(deltaKg) : deltaKg
+  const roundedDelta = Number(convertedDelta.toFixed(1))
+
+  if (roundedDelta > 0) return "increase"
+  if (roundedDelta < 0) return "decrease"
+  return "same"
+}
+
+export function getWeightChangeByEntryId(entries: WeightEntry[]): Map<string, number | null> {
+  const sortedEntries = [...entries].sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  )
+
+  return sortedEntries.reduce((changes, entry, index) => {
+    const previousEntry = sortedEntries[index - 1]
+    changes.set(entry.id, previousEntry ? entry.weight - previousEntry.weight : null)
+    return changes
+  }, new Map<string, number | null>())
 }
 
 export function formatDate(dateStr: string): string {

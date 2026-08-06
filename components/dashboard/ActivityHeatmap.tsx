@@ -3,9 +3,11 @@
 import { useMemo, useState, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { useStore } from "@/lib/store";
+import { WeightChangeBadge } from "@/components/weight/WeightChangeBadge";
 import { Activity, ChevronLeft, ChevronRight, Calendar, X, Dumbbell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { formatWeight } from "@/lib/utils";
+import { formatWeight, getWeightChangeByEntryId } from "@/lib/utils";
+import { getTranslations } from "@/lib/i18n";
 import { format } from "date-fns";
 
 function buildGrid(weeks: number) {
@@ -72,41 +74,7 @@ export function ActivityHeatmap({ mode = "weight" }: ActivityHeatmapProps) {
 
   const lang = profile?.language ?? "en";
   const unit = profile?.unit ?? "metric";
-  const t = lang === "ko"
-    ? {
-        weightCalendar: "체중 기록 캘린더",
-        exerciseCalendar: "운동 기록 캘린더",
-        loggedDays: (n: number) => `총 ${n}일 기록`,
-        exerciseDays: (n: number) => `총 ${n}일 운동`,
-        notLogged: "기록 없음",
-        logged: "기록됨",
-        exerciseDone: "운동함",
-        noEntries: "기록 없음",
-        entries: (n: number) => `${n}개 기록`,
-        weightLog: "체중 기록",
-        exerciseLog: "운동 기록",
-        noWeightEntries: "이 날짜에는 체중 기록이 없습니다.",
-        noExerciseEntries: "이 날짜에는 운동 기록이 없습니다.",
-        afterWorkout: "운동 후",
-        beforeWorkout: "운동 전",
-      }
-    : {
-        weightCalendar: "Weight Log Calendar",
-        exerciseCalendar: "Exercise Log Calendar",
-        loggedDays: (n: number) => `${n} logged days`,
-        exerciseDays: (n: number) => `${n} exercise days`,
-        notLogged: "Not logged",
-        logged: "Logged",
-        exerciseDone: "Exercised",
-        noEntries: "No entries",
-        entries: (n: number) => `${n} entries`,
-        weightLog: "Weight log",
-        exerciseLog: "Exercise log",
-        noWeightEntries: "No weight entries for this date.",
-        noExerciseEntries: "No exercise entries for this date.",
-        afterWorkout: "After Workout",
-        beforeWorkout: "Before Workout",
-      };
+  const t = getTranslations(lang);
 
   const [showDetail, setShowDetail] = useState(false);
   const now = new Date();
@@ -192,6 +160,7 @@ export function ActivityHeatmap({ mode = "weight" }: ActivityHeatmapProps) {
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(getInitialSelectedDate);
   const selectedEntries = selectedDate ? getDateEntries(selectedDate) : [];
+  const entryChanges = useMemo(() => getWeightChangeByEntryId(entries), [entries]);
 
   const title = mode === "weight" ? t.weightCalendar : t.exerciseCalendar;
   const subtitle = mode === "weight" ? t.loggedDays(totalActiveDays) : t.exerciseDays(totalActiveDays);
@@ -200,12 +169,14 @@ export function ActivityHeatmap({ mode = "weight" }: ActivityHeatmapProps) {
 
   return (
     <>
-      <div
+      <button
+        type="button"
         onClick={() => {
           setSelectedDate(getInitialSelectedDate());
           setShowDetail(true);
         }}
-        className="cursor-pointer"
+        className="w-full cursor-pointer text-left"
+        aria-label={title}
       >
         <Card className="overflow-hidden p-4 transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:[box-shadow:2px_2px_0px_0px_hsl(var(--border))]">
           <div className="mb-3 flex items-center justify-between">
@@ -219,7 +190,7 @@ export function ActivityHeatmap({ mode = "weight" }: ActivityHeatmapProps) {
               </div>
             </div>
             <div className="rounded-xl bg-primary px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-primary-foreground [border:var(--neo-border)]">
-              {lang === "ko" ? "보기" : "View"}
+              {t.view}
             </div>
           </div>
 
@@ -249,7 +220,7 @@ export function ActivityHeatmap({ mode = "weight" }: ActivityHeatmapProps) {
             <span className="text-[9px] font-bold text-foreground/40">{mode === "weight" ? t.logged : t.exerciseDone}</span>
           </div>
         </Card>
-      </div>
+      </button>
 
       <AnimatePresence>
         {showDetail && (
@@ -278,7 +249,8 @@ export function ActivityHeatmap({ mode = "weight" }: ActivityHeatmapProps) {
                 </div>
                 <button
                   onClick={() => { setShowDetail(false); }}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-foreground/50 hover:text-foreground"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground/50 hover:text-foreground"
+                  aria-label={lang === "ko" ? "닫기" : "Close"}
                 >
                   <X className="h-5 w-5" strokeWidth={2.5} />
                 </button>
@@ -286,7 +258,7 @@ export function ActivityHeatmap({ mode = "weight" }: ActivityHeatmapProps) {
 
               <div className="mb-5 flex items-center gap-2">
                 <div className="rounded-xl bg-muted px-3.5 py-1.5 text-xs font-black [border:var(--neo-border)]">
-                  {selectedEntries.length > 0 ? t.entries(selectedEntries.length) : t.noEntries}
+                  {selectedEntries.length > 0 ? t.heatmapEntries(selectedEntries.length) : t.noHeatmapEntries}
                 </div>
               </div>
 
@@ -306,14 +278,23 @@ export function ActivityHeatmap({ mode = "weight" }: ActivityHeatmapProps) {
                       <div className="space-y-1.5">
                         {selectedEntries.length > 0 ? (
                           selectedEntries.map((entry) => (
-                            <div key={entry.id} className="flex items-center justify-between text-sm">
-                              <div className="flex items-center gap-2">
-                                <span className="font-black">{formatWeight(entry.weight, unit)}</span>
-                                {mode === "exercise" && entry.exerciseContext !== "none" && (
-                                  <span className="rounded-md bg-foreground px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
-                                    {entry.exerciseContext === "after" ? t.afterWorkout : t.beforeWorkout}
-                                  </span>
-                                )}
+                            <div key={entry.id} className="flex items-start justify-between gap-3 text-sm">
+                              <div className="min-w-0">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <span className="font-black">{formatWeight(entry.weight, unit)}</span>
+                                  {mode === "exercise" && entry.exerciseContext !== "none" && (
+                                    <span className="rounded-md bg-foreground px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
+                                      {entry.exerciseContext === "after" ? t.afterWorkout : t.beforeWorkout}
+                                    </span>
+                                  )}
+                                </div>
+                                <WeightChangeBadge
+                                  deltaKg={entryChanges.get(entry.id)}
+                                  unit={unit}
+                                  language={lang}
+                                  showFirstLog
+                                  className="mt-1"
+                                />
                               </div>
                               <span className="text-xs font-bold text-foreground/40">
                                 {format(new Date(entry.timestamp), "h:mm a")}
@@ -336,10 +317,10 @@ export function ActivityHeatmap({ mode = "weight" }: ActivityHeatmapProps) {
                     {lang === "ko" ? `${viewYear}년 ${viewMonth + 1}월` : `${monthNames[viewMonth]} ${viewYear}`}
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={prevMonth} className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted [border:var(--neo-border)] hover:bg-accent">
+                    <button onClick={prevMonth} className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted [border:var(--neo-border)] hover:bg-accent" aria-label={lang === "ko" ? "이전 달" : "Previous month"}>
                       <ChevronLeft className="h-4 w-4" strokeWidth={2.5} />
                     </button>
-                    <button onClick={nextMonth} className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted [border:var(--neo-border)] hover:bg-accent">
+                    <button onClick={nextMonth} className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted [border:var(--neo-border)] hover:bg-accent" aria-label={lang === "ko" ? "다음 달" : "Next month"}>
                       <ChevronRight className="h-4 w-4" strokeWidth={2.5} />
                     </button>
                   </div>

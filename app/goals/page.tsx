@@ -1,7 +1,6 @@
 // app/goals/page.tsx
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import { format, differenceInDays } from "date-fns";
 import { Target, TrendingDown, TrendingUp, Minus } from "lucide-react";
@@ -89,21 +88,10 @@ export default function GoalsPage() {
 
   return (
     <div className="mx-auto max-w-md space-y-4 px-4 py-6">
-      <header className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-black tracking-tight">{t.goals}</h1>
-          <p className="text-sm font-bold text-foreground/50">{t.goalsSubtitle}</p>
-        </div>
-        <Image
-          src="/icons/icon-192.png"
-          alt="Huahuachi icon"
-          width={64}
-          height={64}
-          className="h-16 w-16 scale-x-[-1] rounded-2xl object-contain"
-          style={{ backgroundColor: "rgb(249, 247, 241)" }}
-        />
+      <header>
+        <h1 className="text-2xl font-black tracking-tight">{t.goals}</h1>
+        <p className="text-sm font-bold text-foreground/50">{t.goalsSubtitle}</p>
       </header>
-
 
       {goal ? (
         <Card>
