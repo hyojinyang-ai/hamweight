@@ -1,16 +1,18 @@
 // app/page.tsx
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { WeightCard } from "@/components/weight/WeightCard";
-import { WeightSheet } from "@/components/weight/WeightSheet";
-import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
-import { StreakCelebration } from "@/components/celebration/StreakCelebration";
 import { GoalProgressRing } from "@/components/dashboard/GoalProgressRing";
 import { STREAK_MILESTONES } from "@/lib/constants";
 import { getTranslations } from "@/lib/i18n";
+
+const WeightSheet = dynamic(() => import("@/components/weight/WeightSheet").then(m => ({ default: m.WeightSheet })), { ssr: false });
+const OnboardingFlow = dynamic(() => import("@/components/onboarding/OnboardingFlow").then(m => ({ default: m.OnboardingFlow })), { ssr: false });
+const StreakCelebration = dynamic(() => import("@/components/celebration/StreakCelebration").then(m => ({ default: m.StreakCelebration })), { ssr: false });
 
 export default function Home() {
   const onboardingComplete = useStore((s) => s.onboardingComplete);
@@ -51,9 +53,10 @@ export default function Home() {
         <div className="overflow-hidden rounded-[1.4rem] [border:var(--neo-border)] [box-shadow:var(--neo-shadow)]">
           <Image
             src="/images/myweight-hero.png"
-            alt="My Weight"
+            alt="MyWeight"
             width={800}
             height={400}
+            sizes="(max-width: 448px) 100vw, 448px"
             className="w-full object-cover"
             priority
           />

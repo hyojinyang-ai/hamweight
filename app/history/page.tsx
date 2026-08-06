@@ -9,7 +9,9 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from "@/components/ui/dialog";
-import { WeightChangeChart } from "@/components/charts/WeightChangeChart";
+import dynamic from "next/dynamic";
+
+const WeightChangeChart = dynamic(() => import("@/components/charts/WeightChangeChart").then(m => ({ default: m.WeightChangeChart })), { ssr: false });
 import { WeightChangeBadge } from "@/components/weight/WeightChangeBadge";
 import { useStore } from "@/lib/store";
 import { formatWeight, getWeightChangeByEntryId } from "@/lib/utils";
