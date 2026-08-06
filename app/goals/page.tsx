@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { format, differenceInDays } from "date-fns";
-import { Target, TrendingDown, TrendingUp, Minus } from "lucide-react";
+import { Target, TrendingDown, TrendingUp, Minus, MoreVertical, ArrowRight, Calendar, Flag } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
+  DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useStore } from "@/lib/store";
@@ -34,6 +36,8 @@ export default function GoalsPage() {
   const getLatestEntry = useStore((s) => s.getLatestEntry);
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [goalType, setGoalType] = useState<Goal["type"]>("lose");
   const [targetWeight, setTargetWeight] = useState("");
   const [deadline, setDeadline] = useState("");
@@ -63,6 +67,12 @@ export default function GoalsPage() {
     setDeadline("");
   };
 
+  const handleClearGoal = () => {
+    setGoal(null);
+    setDeleteConfirmOpen(false);
+    setMenuOpen(false);
+  };
+
   const getProgress = () => {
     if (!goal) return 0;
     const totalChange = Math.abs(goal.startWeight - goal.targetWeight);
@@ -85,6 +95,7 @@ export default function GoalsPage() {
 
   const progress = getProgress();
   const isGoalAchieved = goal && progress >= 100;
+  const remainingWeight = goal ? Math.abs(currentWeight - goal.targetWeight) : 0;
 
   return (
     <div className="mx-auto max-w-md space-y-4 px-4 py-6">
@@ -103,13 +114,35 @@ export default function GoalsPage() {
                 {goal.type === "gain" && t.gainWeight}
                 {goal.type === "maintain" && t.maintainWeight}
               </CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setGoal(null)}
-              >
-                {t.clear}
-              </Button>
+
+              {/* Kebab menu */}
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9"
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  aria-label={lang === "ko" ? "메뉴" : "Menu"}
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+                {menuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+                    <div className="absolute right-0 top-full z-50 mt-1 min-w-[140px] rounded-xl bg-background p-1.5 [border:var(--neo-border)]">
+                      <button
+                        onClick={() => {
+                          setMenuOpen(false);
+                          setDeleteConfirmOpen(true);
+                        }}
+                        className="w-full rounded-lg px-3 py-2 text-left text-sm font-bold text-destructive hover:bg-destructive/10"
+                      >
+                        {t.clear}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -121,40 +154,63 @@ export default function GoalsPage() {
               </div>
               <div className="h-4 overflow-hidden rounded-lg bg-muted [border:var(--neo-border)]">
                 <div
-                  className="h-full rounded-lg bg-primary transition-all"
+                  className="h-full rounded-lg bg-primary transition-all duration-700 ease-out"
                   style={{ width: `${progress}%` }}
                 />
               </div>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="rounded-lg bg-muted/50 p-3 [border:var(--neo-border)]">
-                <div className="font-bold text-foreground/50">{t.current}</div>
-                <div className="text-lg font-black">
-                  {formatWeight(currentWeight, unit)}
+            {/* Current vs Target */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 rounded-xl bg-muted/50 p-3 [border:var(--neo-border)]">
+                <div className="text-xs font-bold text-foreground/50">{t.current}</div>
+                <div className="mt-0.5 text-xl font-black">
+                  {formatWeight(currentWeight, unit).split(" ")[0]}
+                  <span className="ml-1 text-sm font-bold text-foreground/45">{unit === "imperial" ? "lb" : "kg"}</span>
                 </div>
               </div>
-              <div className="rounded-lg bg-muted/50 p-3 [border:var(--neo-border)]">
-                <div className="font-bold text-foreground/50">{t.target}</div>
-                <div className="text-lg font-black">
-                  {formatWeight(goal.targetWeight, unit)}
+
+              <ArrowRight className="h-5 w-5 flex-shrink-0 text-foreground/30" strokeWidth={2.5} />
+
+              <div className="flex-1 rounded-xl bg-primary/15 p-3 [border:var(--neo-border)]">
+                <div className="flex items-center gap-1 text-xs font-bold text-primary-foreground/70">
+                  <Flag className="h-3 w-3" />
+                  {t.target}
+                </div>
+                <div className="mt-0.5 text-xl font-black">
+                  {formatWeight(goal.targetWeight, unit).split(" ")[0]}
+                  <span className="ml-1 text-sm font-bold text-foreground/45">{unit === "imperial" ? "lb" : "kg"}</span>
                 </div>
               </div>
-              <div className="rounded-lg bg-muted/50 p-3 [border:var(--neo-border)]">
-                <div className="font-bold text-foreground/50">{t.started}</div>
-                <div className="font-bold">
-                  {format(new Date(goal.startDate), "MMM d")}
+            </div>
+
+            {/* Remaining */}
+            {!isGoalAchieved && (
+              <div className="text-center text-sm font-bold text-foreground/50">
+                {formatWeight(remainingWeight, unit).split(" ")[0]} {unit === "imperial" ? "lb" : "kg"} {t.toGo}
+              </div>
+            )}
+
+            {/* Dates */}
+            <div className={`grid gap-3 text-sm ${goal.deadline ? "grid-cols-2" : "grid-cols-1"}`}>
+              <div className="flex items-center gap-2 rounded-xl bg-muted/50 p-3 [border:var(--neo-border)]">
+                <Calendar className="h-4 w-4 text-foreground/40" />
+                <div>
+                  <div className="text-xs font-bold text-foreground/50">{t.started}</div>
+                  <div className="font-bold">{format(new Date(goal.startDate), "MMM d")}</div>
                 </div>
               </div>
               {goal.deadline && (
-                <div className="rounded-lg bg-muted/50 p-3 [border:var(--neo-border)]">
-                  <div className="font-bold text-foreground/50">{t.deadline}</div>
-                  <div className="font-bold">
-                    {format(new Date(goal.deadline), "MMM d")}
-                    <span className="ml-1 text-xs text-foreground/50">
-                      ({differenceInDays(new Date(goal.deadline), new Date())}{lang === "ko" ? "일" : "d"})
-                    </span>
+                <div className="flex items-center gap-2 rounded-xl bg-muted/50 p-3 [border:var(--neo-border)]">
+                  <Flag className="h-4 w-4 text-foreground/40" />
+                  <div>
+                    <div className="text-xs font-bold text-foreground/50">{t.deadline}</div>
+                    <div className="font-bold">
+                      {format(new Date(goal.deadline), "MMM d")}
+                      <span className="ml-1 text-xs text-foreground/50">
+                        ({differenceInDays(new Date(goal.deadline), new Date())}{lang === "ko" ? "일" : "d"})
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -230,6 +286,34 @@ export default function GoalsPage() {
           </Dialog>
         </Card>
       )}
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent className="max-w-[20rem]">
+          <DialogHeader>
+            <DialogTitle className="text-base font-black">{t.deleteConfirmTitle}</DialogTitle>
+            <DialogDescription className="text-sm">
+              {t.deleteConfirmDesc}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex-row gap-2 sm:flex-row">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => setDeleteConfirmOpen(false)}
+            >
+              {t.cancel}
+            </Button>
+            <Button
+              variant="destructive"
+              className="flex-1"
+              onClick={handleClearGoal}
+            >
+              {t.clear}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
