@@ -4,6 +4,7 @@
 import { useMemo, useState } from "react";
 import { format } from "date-fns";
 import { Trash2, Sunrise, Sun, CloudSun, Moon, Dumbbell, PersonStanding, Flame } from "lucide-react";
+import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -107,9 +108,12 @@ export default function HistoryPage() {
         ) : (
           <Card className="overflow-hidden p-0">
             <div className="divide-y-[2.5px] divide-foreground/10">
-              {sortedEntries.map((entry) => (
-                <div
+              {sortedEntries.map((entry, index) => (
+                <motion.div
                   key={entry.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: Math.min(index * 0.04, 0.3), ease: [0.16, 1, 0.3, 1] }}
                   className="grid grid-cols-[minmax(0,1fr)_2.75rem] items-center gap-3 px-4 py-3.5"
                 >
                   <div className="min-w-0 space-y-2">
@@ -141,7 +145,7 @@ export default function HistoryPage() {
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
-                </div>
+                </motion.div>
               ))}
             </div>
           </Card>

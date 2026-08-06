@@ -70,7 +70,7 @@ export function GoalProgressRing() {
 
       <div className="h-5 overflow-hidden rounded-full bg-muted [border:var(--neo-border)]" role="progressbar" aria-valuenow={percentage} aria-valuemin={0} aria-valuemax={100} aria-label={`${t.progress} ${percentage}%`}>
         <div
-          className={`h-full rounded-full transition-all ${isGoalReached ? "bg-success" : "bg-primary"}`}
+          className={`h-full rounded-full transition-all duration-700 ease-out ${isGoalReached ? "bg-success" : "bg-primary"}`}
           style={{ width: `${percentage}%` }}
         />
       </div>

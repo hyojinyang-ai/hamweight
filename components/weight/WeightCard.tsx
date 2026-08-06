@@ -3,6 +3,7 @@
 
 import { useMemo } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { WeightChangeBadge } from "@/components/weight/WeightChangeBadge";
 import { useStore } from "@/lib/store";
@@ -50,9 +51,15 @@ export function WeightCard() {
         <div className="text-center">
           {latestEntry ? (
             <>
-              <div className="text-6xl font-black tracking-[-0.05em] text-foreground sm:text-7xl">
+              <motion.div
+                className="text-6xl font-black tracking-[-0.05em] text-foreground sm:text-7xl"
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                key={latestEntry.id}
+              >
                 {formatWeight(latestEntry.weight, unit).split(" ")[0]}
-              </div>
+              </motion.div>
               <div className="mt-1.5 text-sm font-bold uppercase tracking-[0.24em] text-foreground/45">
                 {unit === "imperial" ? "lb" : "kg"}
               </div>

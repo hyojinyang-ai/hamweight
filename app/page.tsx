@@ -48,13 +48,28 @@ export default function Home() {
   return (
     <>
       <div className="mx-auto max-w-md space-y-4 px-4 py-6">
-        <WeightCard />
-        <GoalProgressRing />
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <WeightCard />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <GoalProgressRing />
+        </motion.div>
 
         {/* Log Weight CTA Button */}
         <motion.button
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
           whileTap={{ scale: 0.97, y: 2 }}
-          transition={{ type: "spring", stiffness: 400, damping: 25 }}
           onClick={() => setSheetOpen(true)}
           className="w-full rounded-full bg-primary py-4 text-center text-base font-black uppercase tracking-[0.12em] text-primary-foreground [border:var(--neo-border)] [box-shadow:var(--neo-shadow)] active:[box-shadow:0px_0px_0px_0px_transparent]"
         >
