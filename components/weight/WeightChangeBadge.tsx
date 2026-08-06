@@ -66,7 +66,9 @@ export function WeightChangeBadge({
         ? t.decreased
         : t.noChange;
 
-  return (
+  const showReassuranceLine = showReassurance && direction === "increase";
+
+  const badge = (
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full text-[11px] font-black",
@@ -76,7 +78,7 @@ export function WeightChangeBadge({
         !isPlain && direction === "same" && "bg-muted text-foreground/60",
         isPlain && direction !== "same" && "text-foreground",
         isPlain && direction === "same" && "text-foreground/60",
-        className
+        !showReassuranceLine && className
       )}
       aria-label={`${label} ${formatWeightChange(deltaKg, unit)}${
         showContext ? ` ${t.fromLastLog}` : ""
@@ -102,11 +104,17 @@ export function WeightChangeBadge({
           {parenthesized ? t.fromLastLog + ")" : t.fromLastLog}
         </span>
       )}
-      {showReassurance && direction === "increase" && (
-        <span className="ml-0.5 font-bold text-foreground/40">
-          · {t.fluctuationNormal}
-        </span>
-      )}
     </span>
+  );
+
+  if (!showReassuranceLine) return badge;
+
+  return (
+    <div className={cn("flex w-full flex-col items-center gap-1", className)}>
+      {badge}
+      <span className="text-[11px] font-bold text-foreground/40">
+        {t.fluctuationNormal}
+      </span>
+    </div>
   );
 }
