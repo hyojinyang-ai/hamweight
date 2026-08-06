@@ -34,7 +34,7 @@ export function BottomNav() {
               className={cn(
                 "flex flex-col items-center gap-0.5 rounded-full px-4 py-1.5 text-[10px] font-medium uppercase tracking-[0.1em] transition-all",
                 isActive
-                  ? "bg-primary px-5 py-2 text-primary-foreground [box-shadow:var(--neo-shadow-sm)]"
+                  ? "bg-primary mx-1 px-5 py-2 text-primary-foreground"
                   : "text-foreground/45 hover:bg-secondary hover:text-foreground"
               )}
             >

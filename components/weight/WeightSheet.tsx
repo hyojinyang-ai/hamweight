@@ -255,7 +255,7 @@ export function WeightSheet({ open, onOpenChange, onSave }: WeightSheetProps) {
             exit={{ opacity: 0, y: 20 }}
             className="fixed bottom-24 left-1/2 z-50 -translate-x-1/2"
           >
-            <div className="flex items-center gap-2.5 rounded-full bg-foreground px-5 py-3 text-sm font-bold text-background [box-shadow:var(--neo-shadow)]">
+            <div className="flex items-center gap-2.5 rounded-full bg-foreground px-5 py-3 text-sm font-bold text-background">
               <Check className="h-4 w-4" />
               {toastMessage}
             </div>

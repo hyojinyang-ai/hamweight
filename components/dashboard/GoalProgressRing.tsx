@@ -25,7 +25,7 @@ export function GoalProgressRing({ onLogWeight, ctaLabel }: GoalProgressRingProp
     <motion.button
       whileTap={{ scale: 0.97, y: 2 }}
       onClick={onLogWeight}
-      className="w-full rounded-full bg-primary py-4 text-center text-base font-black uppercase tracking-[0.12em] text-primary-foreground [border:var(--neo-border)] [box-shadow:var(--neo-shadow)] active:[box-shadow:0px_0px_0px_0px_transparent]"
+      className="w-full rounded-full bg-primary py-4 text-center text-base font-black uppercase tracking-[0.12em] text-primary-foreground [border:var(--neo-border)]"
     >
       {ctaLabel}
     </motion.button>

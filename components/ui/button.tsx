@@ -9,13 +9,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [border:var(--neo-border)] [box-shadow:var(--neo-shadow-sm)] hover:opacity-94 active:[box-shadow:0px_0px_0px_0px_transparent]",
+        default: "bg-primary text-primary-foreground [border:var(--neo-border)] hover:opacity-94",
         destructive:
-          "bg-destructive text-destructive-foreground [border:var(--neo-border)] [box-shadow:var(--neo-shadow-sm)] hover:opacity-94 active:[box-shadow:0px_0px_0px_0px_transparent]",
+          "bg-destructive text-destructive-foreground [border:var(--neo-border)] hover:opacity-94",
         outline:
-          "bg-background text-foreground [border:var(--neo-border)] [box-shadow:var(--neo-shadow-sm)] hover:bg-secondary active:[box-shadow:0px_0px_0px_0px_transparent]",
+          "bg-background text-foreground [border:var(--neo-border)] hover:bg-secondary",
         secondary:
-          "bg-secondary text-secondary-foreground [border:var(--neo-border)] [box-shadow:var(--neo-shadow-sm)] hover:bg-accent active:[box-shadow:0px_0px_0px_0px_transparent]",
+          "bg-secondary text-secondary-foreground [border:var(--neo-border)] hover:bg-accent",
         ghost: "border-transparent bg-transparent hover:bg-secondary hover:text-accent-foreground shadow-none",
         link: "border-transparent text-primary underline-offset-4 hover:underline shadow-none",
       },

@@ -152,7 +152,7 @@ export function OnboardingFlow() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.15 }}
-              className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-success [border:var(--neo-border)] [box-shadow:var(--neo-shadow)]"
+              className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-success [border:var(--neo-border)]"
             >
               <Check className="h-10 w-10 text-success-foreground" strokeWidth={3} />
             </motion.div>
