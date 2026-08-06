@@ -23,6 +23,7 @@ export interface UserProfile {
 }
 
 export interface Goal {
+  id: string;
   type: 'lose' | 'gain' | 'maintain';
   targetWeight: number; // kg
   deadline?: string; // ISO string

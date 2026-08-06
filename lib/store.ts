@@ -8,7 +8,8 @@ interface AppState {
   // State
   profile: UserProfile | null;
   entries: WeightEntry[];
-  goal: Goal | null;
+  goal: Goal | null; // legacy single goal — migrated to goals[]
+  goals: Goal[];
   streak: number;
   lastLogDate: string | null;
   notificationSettings: NotificationSettings;
@@ -19,6 +20,9 @@ interface AppState {
   addEntry: (entry: Omit<WeightEntry, 'id'>) => void;
   deleteEntry: (id: string) => void;
   setGoal: (goal: Goal | null) => void;
+  addGoal: (goal: Omit<Goal, 'id'>) => void;
+  updateGoal: (id: string, updates: Partial<Omit<Goal, 'id'>>) => void;
+  deleteGoal: (id: string) => void;
   updateNotificationSettings: (settings: Partial<NotificationSettings>) => void;
   completeOnboarding: () => void;
 
@@ -35,6 +39,7 @@ export const useStore = create<AppState>()(
       profile: null,
       entries: [],
       goal: null,
+      goals: [],
       streak: 0,
       lastLogDate: null,
       notificationSettings: {
@@ -91,6 +96,21 @@ export const useStore = create<AppState>()(
 
       setGoal: (goal) => set({ goal }),
 
+      addGoal: (goalData) => {
+        const goal: Goal = { ...goalData, id: uuidv4() };
+        set((state) => ({ goals: [...state.goals, goal] }));
+      },
+
+      updateGoal: (id, updates) =>
+        set((state) => ({
+          goals: state.goals.map((g) => (g.id === id ? { ...g, ...updates } : g)),
+        })),
+
+      deleteGoal: (id) =>
+        set((state) => ({
+          goals: state.goals.filter((g) => g.id !== id),
+        })),
+
       updateNotificationSettings: (settings) =>
         set((state) => ({
           notificationSettings: { ...state.notificationSettings, ...settings },
@@ -122,6 +142,21 @@ export const useStore = create<AppState>()(
     }),
     {
       name: 'hamweight-storage',
+      version: 1,
+      migrate: (persistedState: unknown, version: number) => {
+        const state = persistedState as Record<string, unknown>;
+        if (version === 0) {
+          // Migrate single goal to goals array
+          const legacyGoal = state.goal as Goal | null;
+          if (legacyGoal && !state.goals) {
+            state.goals = [{ ...legacyGoal, id: uuidv4() }];
+            state.goal = null;
+          } else if (!state.goals) {
+            state.goals = [];
+          }
+        }
+        return state as unknown as AppState;
+      },
     }
   )
 );

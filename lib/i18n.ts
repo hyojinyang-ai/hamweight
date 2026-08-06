@@ -53,6 +53,9 @@ const translations = {
     targetWeight: "Target Weight",
     deadlineOptional: "Deadline (optional)",
     clear: "Clear",
+    editGoal: "Edit Goal",
+    addGoal: "Add Goal",
+    saveChanges: "Save Changes",
     toGo: "to go",
 
     // Settings
@@ -225,6 +228,9 @@ const translations = {
     targetWeight: "목표 체중",
     deadlineOptional: "마감일 (선택사항)",
     clear: "삭제",
+    editGoal: "목표 수정",
+    addGoal: "목표 추가",
+    saveChanges: "변경 저장",
     toGo: "남음",
 
     settings: "설정",

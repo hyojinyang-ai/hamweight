@@ -12,7 +12,9 @@ interface GoalProgressRingProps {
 }
 
 export function GoalProgressRing({ onLogWeight, ctaLabel }: GoalProgressRingProps) {
-  const goal = useStore((s) => s.goal);
+  const goals = useStore((s) => s.goals);
+  const legacyGoal = useStore((s) => s.goal);
+  const goal = goals[0] ?? legacyGoal;
   const profile = useStore((s) => s.profile);
   const getLatestEntry = useStore((s) => s.getLatestEntry);
 
