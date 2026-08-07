@@ -4,11 +4,11 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "MyWeight",
     short_name: "MyWeight",
-    description: "Simple weight tracking with your hamster buddy",
+    description: "Simple weight tracking — no account needed",
     start_url: "/",
     display: "standalone",
-    background_color: "#fef7f5",
-    theme_color: "#f08c70",
+    background_color: "#fef3d0",
+    theme_color: "#fef3d0",
     orientation: "portrait",
     icons: [
       {
