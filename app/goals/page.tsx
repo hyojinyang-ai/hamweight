@@ -309,7 +309,7 @@ export default function GoalsPage() {
               {editingGoal ? t.editGoal : t.setYourGoal}
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+          <div className="min-w-0 space-y-4 overflow-hidden py-4">
             <div>
               <Label>{t.goalType}</Label>
               <Select
@@ -342,23 +342,23 @@ export default function GoalsPage() {
               </div>
             </div>
 
-            <div>
+            <div className="min-w-0">
               <Label>{t.started}</Label>
               <Input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="mt-1"
+                className="mt-1 w-full [&::-webkit-date-and-time-value]:text-left"
               />
             </div>
 
-            <div>
+            <div className="min-w-0">
               <Label>{t.deadlineOptional}</Label>
               <Input
                 type="date"
                 value={deadline}
                 onChange={(e) => setDeadline(e.target.value)}
-                className="mt-1"
+                className="mt-1 w-full [&::-webkit-date-and-time-value]:text-left"
               />
             </div>
 
