@@ -25,6 +25,8 @@ interface AppState {
   deleteGoal: (id: string) => void;
   updateNotificationSettings: (settings: Partial<NotificationSettings>) => void;
   completeOnboarding: () => void;
+  getExportData: () => string;
+  importData: (json: string) => boolean;
 
   // Computed helpers
   getLatestEntry: () => WeightEntry | null;
@@ -117,6 +119,42 @@ export const useStore = create<AppState>()(
         })),
 
       completeOnboarding: () => set({ onboardingComplete: true }),
+
+      getExportData: () => {
+        const { profile, entries, goals, goal, streak, lastLogDate, notificationSettings, onboardingComplete } = get();
+        return JSON.stringify({
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          profile,
+          entries,
+          goals,
+          goal,
+          streak,
+          lastLogDate,
+          notificationSettings,
+          onboardingComplete,
+        }, null, 2);
+      },
+
+      importData: (json: string) => {
+        try {
+          const data = JSON.parse(json);
+          if (!data.entries || !Array.isArray(data.entries)) return false;
+          set({
+            profile: data.profile ?? null,
+            entries: data.entries,
+            goals: data.goals ?? [],
+            goal: data.goal ?? null,
+            streak: data.streak ?? 0,
+            lastLogDate: data.lastLogDate ?? null,
+            notificationSettings: data.notificationSettings ?? { enabled: false, time: '08:00', sound: true },
+            onboardingComplete: data.onboardingComplete ?? true,
+          });
+          return true;
+        } catch {
+          return false;
+        }
+      },
 
       // Computed helpers
       getLatestEntry: () => {

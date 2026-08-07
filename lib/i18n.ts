@@ -79,8 +79,11 @@ const translations = {
     yourData: "Your Data",
     entries: "entries",
     dayStreak: "day streak",
-    exportCSV: "Export CSV",
-    exportJSON: "Export JSON",
+    exportJSON: "Export Backup",
+    importJSON: "Import Backup",
+    importSuccess: "Data restored successfully!",
+    importError: "Invalid backup file",
+    exportSuccess: "Backup downloaded!",
 
     // Onboarding
     welcome: "Welcome!",
@@ -253,8 +256,11 @@ const translations = {
     yourData: "내 데이터",
     entries: "개 기록",
     dayStreak: "일 연속",
-    exportCSV: "CSV 내보내기",
-    exportJSON: "JSON 내보내기",
+    exportJSON: "백업 내보내기",
+    importJSON: "백업 가져오기",
+    importSuccess: "데이터가 복원되었습니다!",
+    importError: "잘못된 백업 파일입니다",
+    exportSuccess: "백업이 다운로드되었습니다!",
 
     welcome: "환영합니다!",
     welcomeDesc: "체중을 기록하고, 연속 기록을 쌓고, 진행 상황을 확인하세요. 계정 불필요 — 데이터는 이 기기에만 저장됩니다.",
